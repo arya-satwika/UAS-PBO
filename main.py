@@ -24,10 +24,14 @@ class GUI(ctk.CTk):
         super().__init__()
         self.title("Tutor App")
         self.geometry("1200x800")
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
         # self.minsize(1000, 700)
-        self.frame = ctk.CTkFrame(master=self,fg_color="#2e4a5c")
-        self.frame.pack(pady=20, padx=20, fill="both", expand=True)
-        self.grid_columnconfigure((0, 1), weight=1)
+        self.frame = ctk.CTkScrollableFrame(master=self,fg_color="#ba2525")
+        self.frame.grid(row=0,column=0,pady=20, padx=20, sticky="nsew")
+        # self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+        # self.grid_columnconfigure((0, 1), weight=1)
         self.tutors = {
             "nama": "Astuti",
             "angkatan": 2022,
@@ -44,21 +48,23 @@ class GUI(ctk.CTk):
         
         ctk.set_widget_scaling(1.5)
         ctk.set_default_color_theme("green")
+        for tutor in users.get("tutor", []):
+            self.tutorCard(tutor)
         self.tutorCard(self.tutors)
     
     def tutorCard(self, tutor):
         card = ctk.CTkFrame(
             master=self.frame, 
-            width=500,  
+            width=1200,  
             height=250,
-            fg_color="#132e3f",
+            fg_color="#029b26",
             corner_radius=40,
         )
-        card.grid(row=0,column=0,pady=20, padx=20, sticky="nsew")
+        card.pack(pady=20, padx=20, expand=True,side="top", anchor="n")
         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
-            font=("Arial", 24),
+            font=("Gotham", 24, "bold"),
             anchor="w",
             justify="left",
             bg_color="blue",
@@ -84,7 +90,46 @@ class GUI(ctk.CTk):
             bg_color="blue",
         )
         matkul_label.grid(row=0,column=0,padx=10, pady=10, sticky="w",)
-
+        inner_frame = ctk.CTkFrame(
+            master=card,
+            width=200,
+            height=100,
+            bg_color="#5ad6ff",
+            fg_color="#5ad6ff",
+            corner_radius=20,
+        )
+        inner_frame.grid(row=2,column=0,pady=0, padx=0, sticky="ew")
+        waktu_label = ctk.CTkLabel(
+            master=inner_frame, 
+            text=f"Waktu Belajar: {tutor['waktu-belajar']}", 
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        waktu_label.pack(padx=(10,5), pady=0,side="left")
+        tempat_label = ctk.CTkLabel(
+            master=inner_frame, 
+            text=f"Tempat Belajar: {tutor['tempat-belajar']}", 
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        tempat_label.pack(padx=5, pady=0,side="left")
+        button_chat = ctk.CTkButton(
+            master=card, 
+            text="Chat", 
+            font=("Arial", 16),
+            command=lambda: print(f"Chat with {tutor['nama']}"),
+            corner_radius=20,
+            height=40,
+            width=100,
+            fg_color="#4CAF50",
+            hover_color="#45a049",
+        )
+        button_chat.grid(row=0,column=1,pady=10, padx=10)
+        button_chat.grid_columnconfigure(1, weight=1)
     def run(self):
         self.mainloop()
     

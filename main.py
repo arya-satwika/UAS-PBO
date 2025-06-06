@@ -4,7 +4,7 @@ import json
 import os
 
 DATA_FILE = "data.json"
-
+#heyo
 def load_users():
     if not os.path.exists(DATA_FILE):
         with open(DATA_FILE, "w") as f:

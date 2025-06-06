@@ -1,20 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-import json
-import os
-
-DATA_FILE = "data.json"
-
-def load_users():
-    if not os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "w") as f:
-            json.dump({"tutor": []}, f)
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
-
-def save_users(users):
-    with open(DATA_FILE, "w") as f:
-        json.dump(users, f, indent=2)
 
 class Tutor:
     def __init__(self, name, email, matkul):
@@ -22,10 +7,7 @@ class Tutor:
         self.email = email
         self.matkul = matkul
 
-    def to_dict(self):
-        return {"name": self.name, "email": self.email, "matkul": self.matkul}
-
-class RegisterTutor:
+class RegisterTutorApp:
     def __init__(self, master):
         self.master = master
         master.title("Register Pengajar")
@@ -58,41 +40,10 @@ class RegisterTutor:
             return
 
         tutor = Tutor(name, email, matkul)
-        users = load_users()
-        users["tutor"].append(tutor.to_dict())
-        save_users(users)
-
+        # Simpan ke database/file di sini jika diperlukan
         messagebox.showinfo("Sukses", f"Pengajar {tutor.name} berhasil didaftarkan!")
-        self.entry_name.delete(0, tk.END)
-        self.entry_email.delete(0, tk.END)
-        self.entry_matkul.delete(0, tk.END)
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = RegisterTutor(root)
+    app = RegisterTutorApp(root)
     root.mainloop()
-
-
-
-users = json.load(open("data.json"))
-
-class User:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-        self.loadAllTutors()
-    def loadAllTutors(self):
-        user_list = users.get("tutor", [])
-        return user_list
-    def filterByMatkul(self, matkul):
-        filtered_list = [
-            filtered_user
-            for filtered_user in users.get("tutor", [])
-                if matkul in filtered_user.get("matkul", [])]
-        return filtered_list
-class matkul:
-    def __init__(self, name, code):
-        self.name = name
-        self.code = code
-
-

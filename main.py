@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 import json
 import os
@@ -30,22 +30,22 @@ class RegisterTutor:
         self.master = master
         master.title("Register Pengajar")
 
-        self.label_name = tk.Label(master, text="Nama Pengajar:")
+        self.label_name = ctk.CTkLabel(master, text="Nama Pengajar:")
         self.label_name.grid(row=0, column=0, padx=10, pady=5, sticky="w")
-        self.entry_name = tk.Entry(master)
+        self.entry_name = ctk.CTkEntry(master)
         self.entry_name.grid(row=0, column=1, padx=10, pady=5)
 
-        self.label_email = tk.Label(master, text="Email:")
+        self.label_email = ctk.CTkLabel(master, text="Email:")
         self.label_email.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        self.entry_email = tk.Entry(master)
+        self.entry_email = ctk.CTkEntry(master)
         self.entry_email.grid(row=1, column=1, padx=10, pady=5)
 
-        self.label_matkul = tk.Label(master, text="Mata Kuliah:")
+        self.label_matkul = ctk.CTkLabel(master, text="Mata Kuliah:")
         self.label_matkul.grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        self.entry_matkul = tk.Entry(master)
+        self.entry_matkul = ctk.CTkEntry(master)
         self.entry_matkul.grid(row=2, column=1, padx=10, pady=5)
 
-        self.button_register = tk.Button(master, text="Register", command=self.register_tutor)
+        self.button_register = ctk.CTkButton(master, text="Register", command=self.register_tutor)
         self.button_register.grid(row=3, column=0, columnspan=2, pady=10)
 
     def register_tutor(self):
@@ -63,12 +63,12 @@ class RegisterTutor:
         save_users(users)
 
         messagebox.showinfo("Sukses", f"Pengajar {tutor.name} berhasil didaftarkan!")
-        self.entry_name.delete(0, tk.END)
-        self.entry_email.delete(0, tk.END)
-        self.entry_matkul.delete(0, tk.END)
+        self.entry_name.delete(0, ctk.END)
+        self.entry_email.delete(0, ctk.END)
+        self.entry_matkul.delete(0, ctk.END)
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = RegisterTutor(root)
     root.mainloop()
 

@@ -23,35 +23,50 @@ class GUI(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Tutor App")
-        self.geometry("1200x800")
+        self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         # self.minsize(1000, 700)
         self.frame = ctk.CTkScrollableFrame(master=self,fg_color="#ba2525")
-        self.frame.grid(row=0,column=0,pady=20, padx=20, sticky="nsew")
-        # self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew")
         self.frame.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure((0, 1), weight=1)
-        self.tutors = {
-            "nama": "Astuti",
-            "angkatan": 2022,
-            "prodi": "Teknik Informatika",
-            "tempat-belajar": "FC Ketintang",
-            "waktu-belajar": "15.00 - 17.00",
-            "mata-kuliah": [
-                "Struktur Data", 
-                "Pemrograman Berorientasi Objek",
-                "Statistika",
-                "Matetmatika Diskrit"
-            ]
-        }
-        
-        ctk.set_widget_scaling(1.5)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
+
+        # self.mainContent = ctk.CTkFrame(
+        #     master=self.frame,
+        #     width=800,
+        #     height=500,
+        #     fg_color="#ba2525",
+        #     corner_radius=20,
+        # )
+        # self.mainContent.grid(row=0,column=1,pady=20, padx=20, sticky="nsew")
+        self.tutors = User().loadAllTutors()
+        # ctk.set_widget_scaling(1.)
         ctk.set_default_color_theme("green")
-        for tutor in users.get("tutor", []):
+      
+        self.sidebar()
+        for tutor in self.tutors:
             self.tutorCard(tutor)
-        self.tutorCard(self.tutors)
     
+    def sidebar(self):
+        sidebarFrame = ctk.CTkFrame(
+            master=self, 
+            width=100, 
+            height=500,
+            fg_color="#2dbe10",
+            bg_color="#771818",
+            corner_radius=20,
+        )
+        sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew")
+        testlabel= ctk.CTkLabel(
+            master=sidebarFrame,
+            text="Sidebar",
+            font=("Arial", 20, "bold"),
+            fg_color="#2dbe10",
+            bg_color="#771818",
+        )
+        testlabel.grid(row=0,column=0,pady=20, padx=20)
     def tutorCard(self, tutor):
         card = ctk.CTkFrame(
             master=self.frame, 

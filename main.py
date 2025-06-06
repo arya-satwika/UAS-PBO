@@ -16,19 +16,45 @@ def save_users(users):
     with open(DATA_FILE, "w") as f:
         json.dump(users, f, indent=2)
 
-class Tutor:
-    def __init__(self, name, email, matkul):
+class User:
+    def __init__(self, name, age, email=None, matkul=None):
         self.name = name
+        self.age = age
         self.email = email
         self.matkul = matkul
+        self.users = load_users()
+        self.tutors = self.users.get("tutor", [])
 
     def to_dict(self):
-        return {"name": self.name, "email": self.email, "matkul": self.matkul}
+        return {
+            "name": self.name,
+            "age": self.age,
+            "email": self.email,
+            "matkul": self.matkul
+        }
+
+    def add_tutor(self):
+        tutor_dict = self.to_dict()
+        tutor_dict = {k: v for k, v in tutor_dict.items() if v is not None and k != "age"}
+        self.tutors.append(tutor_dict)
+        self.users["tutor"] = self.tutors
+        save_users(self.users)
+
+    def loadAllTutors(self):
+        return self.tutors
+
+    def filterByMatkul(self, matkul):
+        filtered_list = [
+            filtered_user
+            for filtered_user in self.tutors
+            if matkul in filtered_user.get("matkul", [])
+        ]
+        return filtered_list
 
 class RegisterTutor:
     def __init__(self, master):
         self.master = master
-        master.title("Register Pengajar")
+        master.title("TutorCerdas")
 
         self.label_name = ctk.CTkLabel(master, text="Nama Pengajar:")
         self.label_name.grid(row=0, column=0, padx=10, pady=5, sticky="w")
@@ -57,12 +83,10 @@ class RegisterTutor:
             messagebox.showerror("Error", "Semua field harus diisi!")
             return
 
-        tutor = Tutor(name, email, matkul)
-        users = load_users()
-        users["tutor"].append(tutor.to_dict())
-        save_users(users)
+        user = User(name, 0, email, matkul)
+        user.add_tutor()
 
-        messagebox.showinfo("Sukses", f"Pengajar {tutor.name} berhasil didaftarkan!")
+        messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.entry_name.delete(0, ctk.END)
         self.entry_email.delete(0, ctk.END)
         self.entry_matkul.delete(0, ctk.END)
@@ -72,24 +96,8 @@ if __name__ == "__main__":
     app = RegisterTutor(root)
     root.mainloop()
 
-
-
 users = json.load(open("data.json"))
 
-class User:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-        self.loadAllTutors()
-    def loadAllTutors(self):
-        user_list = users.get("tutor", [])
-        return user_list
-    def filterByMatkul(self, matkul):
-        filtered_list = [
-            filtered_user
-            for filtered_user in users.get("tutor", [])
-                if matkul in filtered_user.get("matkul", [])]
-        return filtered_list
 class matkul:
     def __init__(self, name, code):
         self.name = name

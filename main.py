@@ -71,21 +71,17 @@ class GUI(ctk.CTk):
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        # self.minsize(1000, 700)
-        self.frame = ctk.CTkScrollableFrame(master=self,fg_color="#ba2525")
-        self.frame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew")
-        self.frame.grid_columnconfigure(0, weight=1)
+        self.mainFrame = ctk.CTkScrollableFrame(
+            master=self,
+            fg_color="#ba2525",
+            width=700,
+            height=500,
+            )
+        self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,0), sticky="nsew")
+        self.mainFrame.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(1, weight=0)
 
-        # self.mainContent = ctk.CTkFrame(
-        #     master=self.frame,
-        #     width=800,
-        #     height=500,
-        #     fg_color="#ba2525",
-        #     corner_radius=20,
-        # )
-        # self.mainContent.grid(row=0,column=1,pady=20, padx=20, sticky="nsew")
         self.tutors = User().loadAllTutors()
         # ctk.set_widget_scaling(1.)
         ctk.set_default_color_theme("green")
@@ -97,7 +93,7 @@ class GUI(ctk.CTk):
     def sidebar(self):
         sidebarFrame = ctk.CTkFrame(
             master=self, 
-            width=100, 
+            width=200, 
             height=500,
             fg_color="#2dbe10",
             bg_color="#771818",
@@ -114,13 +110,13 @@ class GUI(ctk.CTk):
         testlabel.grid(row=0,column=0,pady=20, padx=20)
     def tutorCard(self, tutor):
         card = ctk.CTkFrame(
-            master=self.frame, 
-            width=1200,  
+            master=self.mainFrame, 
+            width=700,  
             height=250,
             fg_color="#029b26",
             corner_radius=40,
         )
-        card.pack(pady=20, padx=20, expand=True,side="top", anchor="n")
+        card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
@@ -187,9 +183,9 @@ class GUI(ctk.CTk):
             width=100,
             fg_color="#4CAF50",
             hover_color="#45a049",
+            bg_color="#4C74AF",
         )
-        button_chat.grid(row=0,column=1,pady=10, padx=10)
-        button_chat.grid_columnconfigure(1, weight=1)
+        button_chat.grid(row=0,column=1,pady=10, padx=0, sticky="nsew")
     def run(self):
         self.mainloop()
     

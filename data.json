@@ -53,7 +53,7 @@
     {
       "nama": "Juminten",
       "angkatan": 2023,
-      "prodi": "Pendidikan Teknolo Informasi",
+      "prodi": "Pendidikan Teknologi Informasi",
       "tempat-belajar": "FC Ketintang",
       "waktu-belajar": "15.00 - 17.00",
       "mata-kuliah": [
@@ -61,21 +61,6 @@
         "Sistem Operasi",
         "Literasi Digital"
       ]
-    },
-    {
-      "name": "koko",
-      "email": "koko@gmail.com",
-      "matkul": "Statistika"
-    },
-    {
-      "name": "Bang Je",
-      "email": "xixi@gmail.com",
-      "matkul": "Matdis"
-    },
-    {
-      "name": "akabp",
-      "email": "zain@gmail.com",
-      "matkul": "Stuktur data"
     }
   ]
 }

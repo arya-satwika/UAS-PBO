@@ -14,8 +14,15 @@ class User:
     def loadAllTutors(self):
         return users.get("tutor", [])
 
-    def filterByMatkul(self, matkul):
-        return [u for u in self.tutors if matkul in u.get("matkul", [])]
+    def filterTutors(self, matkul_filter="", waktu_filter="", search_query=""):
+        result = []
+        for tutor in self.tutors:
+            match_matkul = (matkul_filter == "Semua") or (matkul_filter.lower() in ', '.join(tutor.get("mata-kuliah", [])).lower())
+            match_waktu = (waktu_filter == "Semua") or (waktu_filter.lower() in tutor.get("waktu-belajar", "").lower())
+            match_search = search_query.lower() in tutor.get("nama", "").lower()
+            if match_matkul and match_waktu and match_search:
+                result.append(tutor)
+        return result
 
 class RegisterTutor(ctk.CTkToplevel):
     def __init__(self, master):
@@ -64,12 +71,40 @@ class RegisterTutor(ctk.CTkToplevel):
         messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.destroy()
 
+class ChatWindow(ctk.CTkToplevel):
+    def __init__(self, master, tutor_nama):
+        super().__init__(master)
+        self.title(f"Chat dengan {tutor_nama}")
+        self.geometry("400x400")
+
+        label = ctk.CTkLabel(self, text=f"👋 Kamu sedang chatting dengan {tutor_nama}", font=("Helvetica", 16))
+        label.pack(pady=20)
+
+        self.textbox = ctk.CTkTextbox(self, width=350, height=250)
+        self.textbox.pack(pady=10)
+
+        self.entry = ctk.CTkEntry(self, width=300)
+        self.entry.pack(side="left", padx=10, pady=10)
+
+        self.send_button = ctk.CTkButton(self, text="Kirim", command=self.send_message)
+        self.send_button.pack(side="right", padx=10)
+
+    def send_message(self):
+        message = self.entry.get()
+        if message:
+            self.textbox.insert("end", f"🧑 Kamu: {message}\n")
+            self.entry.delete(0, "end")
+
 class GUI(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Tutor Cerdas")
-        self.geometry("950x600")
+        self.geometry("1000x650")
         ctk.set_default_color_theme("green")
+
+        self.search_query = ctk.StringVar()
+        self.matkul_filter = ctk.StringVar()
+        self.waktu_filter = ctk.StringVar()
 
         self.sidebar()
         self.main_area()
@@ -86,15 +121,48 @@ class GUI(ctk.CTk):
         register_btn.pack(pady=10)
 
     def main_area(self):
-        self.main_frame = ctk.CTkScrollableFrame(self, corner_radius=15)
-        self.main_frame.pack(expand=True, fill="both", padx=10, pady=10)
+        container = ctk.CTkFrame(self)
+        container.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Ambil data unik untuk dropdown
+        user = User()
+        all_matkul = sorted({mk for tutor in user.tutors for mk in tutor.get("mata-kuliah", [])})
+        all_waktu = sorted({tutor.get("waktu-belajar", "") for tutor in user.tutors})
+
+        matkul_options = ["Semua"] + all_matkul
+        waktu_options = ["Semua"] + all_waktu
+
+        self.filter_bar = ctk.CTkFrame(container)
+        self.filter_bar.pack(fill="x", padx=5, pady=(5, 10))
+
+        search_entry = ctk.CTkEntry(self.filter_bar, placeholder_text="🔎 Cari Nama", textvariable=self.search_query, width=200)
+        search_entry.pack(side="left", padx=10)
+
+        self.matkul_filter.set("Semua")
+        matkul_dropdown = ctk.CTkOptionMenu(self.filter_bar, values=matkul_options, variable=self.matkul_filter, width=180)
+        matkul_dropdown.pack(side="left", padx=10)
+
+        self.waktu_filter.set("Semua")
+        waktu_dropdown = ctk.CTkOptionMenu(self.filter_bar, values=waktu_options, variable=self.waktu_filter, width=150)
+        waktu_dropdown.pack(side="left", padx=10)
+
+        filter_btn = ctk.CTkButton(self.filter_bar, text="Terapkan Filter", command=self.refresh_tutors)
+        filter_btn.pack(side="left", padx=10)
+
+        self.main_frame = ctk.CTkScrollableFrame(container, corner_radius=15)
+        self.main_frame.pack(fill="both", expand=True)
 
     def refresh_tutors(self):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        tutors = User().loadAllTutors()
-        for tutor in tutors:
+        tutor_obj = User()
+        filtered = tutor_obj.filterTutors(
+            matkul_filter=self.matkul_filter.get(),
+            waktu_filter=self.waktu_filter.get(),
+            search_query=self.search_query.get()
+        )
+        for tutor in filtered:
             self.tutor_card(tutor)
 
     def open_register_window(self):
@@ -116,7 +184,7 @@ class GUI(ctk.CTk):
         action_frame = ctk.CTkFrame(card, fg_color="transparent")
         action_frame.pack(anchor="e", padx=20, pady=(0, 10))
 
-        chat_button = ctk.CTkButton(action_frame, text="💬 Chat", font=("Helvetica", 14), fg_color="#1f6f8b", hover_color="#145374", text_color="white", corner_radius=10, command=lambda: print(f"Chat with {tutor['nama']}"))
+        chat_button = ctk.CTkButton(action_frame, text="💬 Chat", font=("Helvetica", 14), fg_color="#1f6f8b", hover_color="#145374", text_color="white", corner_radius=10, command=lambda: ChatWindow(self, tutor['nama']))
         chat_button.pack()
 
     def run(self):

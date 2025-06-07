@@ -1,10 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import json
-import customtkinter as ctk
-import os
 
-users = "data.json"
+users = json.load(open("data.json"))
 
 class User:
     def __init__(self):
@@ -197,6 +195,6 @@ class GUI(ctk.CTk):
     
 if __name__ == "__main__":
     user = User()
-    register=RegisterTutor()
+    # register=RegisterTutor()
     gui = GUI()
     gui.run()

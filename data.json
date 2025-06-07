@@ -62,5 +62,20 @@
                 "Literasi Digital"
             ]
         }
+    ],
+    "users": [
+        {
+            "username": "admin",
+            "password": "admin123",
+            "role": "admin"
+        },
+        {
+            "username": "sule",
+            "password": "prikitiw",
+            "angkatan": 2023,
+            "prodi": "Sistem Informasi",
+            "role": "user",
+            "saldo": 1000000
+        }
     ]
 }

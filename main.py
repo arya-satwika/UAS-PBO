@@ -166,15 +166,14 @@ class GUI(ctk.CTk):
         buttonRegisterTutor.grid(row=2, column=0, pady=10, padx=10, sticky="ew")
 
     def open_register_tutor(self):
-        # Sembunyikan frame utama dan sidebar sebelum membuka form register
+
         self.mainFrame.grid_forget()
         self.sidebarFrame.grid_forget()
-        # Sembunyikan window utama (supaya tidak muncul halaman Tutor App lagi)
         self.withdraw()
         win = ctk.CTkToplevel(self)
         win.title("Register Tutor")
         win.state("zoomed")
-        # Form input
+        
         label_nama = ctk.CTkLabel(win, text="Nama Pengajar:")
         label_nama.grid(row=0, column=0, padx=10, pady=5, sticky="w")
         entry_nama = ctk.CTkEntry(win)

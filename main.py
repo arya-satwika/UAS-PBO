@@ -74,14 +74,34 @@ class GUI(ctk.CTk):
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        self.mainFrame = ctk.CTkScrollableFrame(
-            master=self,
+        self.mainFrame = ctk.CTkFrame(
+            master=self, 
+            width=700, 
+            height=500,
+            fg_color="#771818",
+            bg_color="#771818",
+            corner_radius=20,
+        )
+        self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew",rowspan=2)
+        self.sidebarFrame = ctk.CTkFrame(
+            master=self, 
+            width=300, 
+            height=500,
+            fg_color="#2dbe10",
+            bg_color="#771818",
+            corner_radius=20,
+        )
+        self.sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew",rowspan=2)
+        # self.sidebarFrame.grid_rowconfigure(0, weight=1)
+        # self.sidebarFrame.grid_rowconfigure(1, weight=0)
+        self.tutorFrame = ctk.CTkScrollableFrame(
+            master=self.mainFrame,
             fg_color="#ba2525",
             width=700,
             height=500,
             )
-        self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,0), sticky="nsew")
-        self.mainFrame.grid_columnconfigure(0, weight=0)
+        self.tutorFrame.grid(row=1,column=0,pady=20, padx=(5,0), sticky="nsew")
+        self.tutorFrame.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=0)
 
@@ -90,38 +110,72 @@ class GUI(ctk.CTk):
         ctk.set_default_color_theme("green")
       
         self.sidebar()
+        self.searchBar()    
         for tutor in self.tutors:
             self.tutorCard(tutor)
-    
     def sidebar(self):
-        sidebarFrame = ctk.CTkFrame(
-            master=self, 
+        titleLabel= ctk.CTkLabel(
+            master=self.sidebarFrame,
+            text="Tutor App",
+            font=("Roboto Mono", 20, "bold"),
+            fg_color="#2dbe10",
+            bg_color="#771818",
+        )
+        titleLabel.grid(row=0,column=0,pady=20, padx=20)
+        buttonFrame = ctk.CTkFrame(
+            master=self.sidebarFrame, 
             width=200, 
-            height=500,
+            height=50,
             fg_color="#2dbe10",
             bg_color="#771818",
             corner_radius=20,
         )
-        sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew")
-        testlabel= ctk.CTkLabel(
-            master=sidebarFrame,
-            text="Sidebar",
-            font=("Arial", 20, "bold"),
-            fg_color="#2dbe10",
-            bg_color="#771818",
+        buttonFrame.grid(row=1,column=0, pady=10, padx=20)
+        buttonHistory= ctk.CTkButton(
+            master=buttonFrame, 
+            text="History", 
+            font=("Arial", 16),
+            command=lambda: print("History clicked"),
+            corner_radius=20,
+            height=40,
+            width=100,
+            fg_color="#4CAF50",
+            hover_color="#45a049",
+            bg_color="#2dbe10",
         )
-        testlabel.grid(row=0,column=0,pady=20, padx=20)
+        buttonHistory.pack(side="top", pady=10, padx=10, fill="x")
+    def searchBar(self):
+        topBarFrame = ctk.CTkFrame(
+            master=self.mainFrame,
+            width=700,
+            height=50,
+            fg_color="#ba2525",
+            bg_color="#ba2525",
+            corner_radius=20,
+        )
+        topBarFrame.grid(row=0,column=0,pady=20, padx=(5,0), sticky="ew")
+        titleLabel = ctk.CTkLabel(
+            master=topBarFrame,
+            text="Cari Tutor",
+            font=("Roboto Mono", 20, "bold"),
+            fg_color="#ba2525",
+            bg_color="#ba2525",
+        )
+        titleLabel.pack(side="left", padx=10, pady=10)
+            
+
     def tutorCard(self, tutor):
         card = ctk.CTkFrame(
-            master=self.mainFrame, 
-            width=700,  
-            height=250,
+            master=self.tutorFrame, 
+            width=400,  
+            height=150,
             fg_color="#029b26",
             corner_radius=40,
         )
-        card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
-        card.grid_columnconfigure(0, weight=1)
+        card.pack(pady=10, padx=10, side="top", anchor="s",)
+        card.grid_columnconfigure(0, weight=0)
         card.grid_columnconfigure(1, weight=0)
+        card.grid_propagate(False)
         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
@@ -153,7 +207,7 @@ class GUI(ctk.CTk):
         matkul_label.grid(row=0,column=0,padx=10, pady=10, sticky="w",)
         inner_frame = ctk.CTkFrame(
             master=card,
-            width=200,
+            width=100,
             height=100,
             bg_color="#5ad6ff",
             fg_color="#5ad6ff",
@@ -186,7 +240,7 @@ class GUI(ctk.CTk):
             fg_color="#4C74AF",
             corner_radius=20,
         )
-        buttonFrame.grid(row=3,column=1,pady=10, padx=10, sticky="ew")
+        buttonFrame.grid(row=0,column=1,pady=10, padx=10, rowspan=3,sticky="ew")
         button_chat = ctk.CTkButton(
             master=buttonFrame, 
             text="Chat", 

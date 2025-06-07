@@ -10,14 +10,15 @@ class User:
         user_list = users.get("tutor", [])
         return user_list
     def filterByMatkul(self, matkul):
-        filtered_list = [
-            filtered_user
-            for filtered_user in users.get("tutor", [])
-                if matkul in filtered_user.get("matkul", [])]
+        filtered_list = []
+        for filtered_user in users.get("tutor", []):
+            if matkul in filtered_user.get("mata-kuliah", []):
+                filtered_list.append(filtered_user)
         return filtered_list
     def printAllTutors(self):
         for user in users.get("tutor", []):
             print(list(user.values()))
+    
 
 class GUI(ctk.CTk):
     def __init__(self):

@@ -1,8 +1,11 @@
+import os
+import json
 import customtkinter as ctk
 from tkinter import messagebox
-import json
 
-users = json.load(open("data.json"))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "data.json")
+users = json.load(open(DATA_PATH))
 
 class User:
     def __init__(self):
@@ -117,6 +120,8 @@ class GUI(ctk.CTk):
             corner_radius=40,
         )
         card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
+        card.grid_columnconfigure(0, weight=1)
+        card.grid_columnconfigure(1, weight=0)
         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
@@ -173,8 +178,17 @@ class GUI(ctk.CTk):
             bg_color="blue",
         )
         tempat_label.pack(padx=5, pady=0,side="left")
-        button_chat = ctk.CTkButton(
+        buttonFrame = ctk.CTkFrame(
             master=card, 
+            width=200, 
+            height=50,
+            bg_color="#4C74AF",
+            fg_color="#4C74AF",
+            corner_radius=20,
+        )
+        buttonFrame.grid(row=3,column=1,pady=10, padx=10, sticky="ew")
+        button_chat = ctk.CTkButton(
+            master=buttonFrame, 
             text="Chat", 
             font=("Arial", 16),
             command=lambda: print(f"Chat with {tutor['nama']}"),
@@ -185,7 +199,7 @@ class GUI(ctk.CTk):
             hover_color="#45a049",
             bg_color="#4C74AF",
         )
-        button_chat.grid(row=0,column=1,pady=10, padx=0, sticky="nsew")
+        button_chat.grid(row=0,column=3,pady=10, padx=0, sticky="w")
     def run(self):
         self.mainloop()
     

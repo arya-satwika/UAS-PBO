@@ -44,11 +44,10 @@ class User:
         return self.tutors
 
     def filterByMatkul(self, matkul):
-        filtered_list = [
-            filtered_user
-            for filtered_user in self.tutors
-            if matkul in filtered_user.get("matkul", [])
-        ]
+        filtered_list = []
+        for filtered_user in self.tutors:
+            if matkul in filtered_user.get("matkul", []):
+                filtered_list.append(filtered_user)
         return filtered_list
 
 class RegisterTutor:

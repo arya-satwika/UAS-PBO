@@ -38,9 +38,6 @@ class User:
         self.users["tutor"] = self.tutors
         save_users(self.users)
 
-    def loadAllTutors(self):
-        return self.tutors
-
     def filterByMatkul(self, matkul):
         filtered_list = []
         for filtered_user in self.tutors:

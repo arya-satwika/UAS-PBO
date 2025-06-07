@@ -74,6 +74,8 @@ class GUI(ctk.CTk):
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)  # Tambahkan agar mainFrame bisa membesar
+
         self.mainFrame = ctk.CTkFrame(
             master=self, 
             width=700, 
@@ -83,6 +85,9 @@ class GUI(ctk.CTk):
             corner_radius=20,
         )
         self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew",rowspan=2)
+        self.mainFrame.grid_rowconfigure(1, weight=1)  # Tambahkan agar tutorFrame bisa membesar
+        self.mainFrame.grid_columnconfigure(0, weight=1)
+
         self.sidebarFrame = ctk.CTkFrame(
             master=self, 
             width=300, 
@@ -101,9 +106,9 @@ class GUI(ctk.CTk):
             height=500,
             )
         self.tutorFrame.grid(row=1,column=0,pady=20, padx=(5,0), sticky="nsew")
-        self.tutorFrame.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(1, weight=0)
+        self.tutorFrame.grid_columnconfigure(0, weight=1)  # Agar konten di dalam scrollable frame bisa membesar
+
+        # ...existing code...
 
         self.tutors = User().loadAllTutors()
         # ctk.set_widget_scaling(1.)
@@ -144,6 +149,115 @@ class GUI(ctk.CTk):
             bg_color="#2dbe10",
         )
         buttonHistory.pack(side="top", pady=10, padx=10, fill="x")
+        # Hapus duplikasi buttonFrame dan buttonHistory
+        # Tambahkan tombol Register Tutor yang benar
+        buttonRegisterTutor = ctk.CTkButton(
+            master=self.sidebarFrame,
+            text="Register Tutor",
+            font=("Arial", 16),
+            command=self.open_register_tutor,
+            corner_radius=20,
+            height=40,
+            width=100,
+            fg_color="#4CAF50",
+            hover_color="#45a049",
+            bg_color="#2dbe10",
+        )
+        buttonRegisterTutor.grid(row=2, column=0, pady=10, padx=10, sticky="ew")
+
+    def open_register_tutor(self):
+        # Sembunyikan frame utama dan sidebar sebelum membuka form register
+        self.mainFrame.grid_forget()
+        self.sidebarFrame.grid_forget()
+        # Sembunyikan window utama (supaya tidak muncul halaman Tutor App lagi)
+        self.withdraw()
+        win = ctk.CTkToplevel(self)
+        win.title("Register Tutor")
+        win.state("zoomed")
+        # Form input
+        label_nama = ctk.CTkLabel(win, text="Nama Pengajar:")
+        label_nama.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+        entry_nama = ctk.CTkEntry(win)
+        entry_nama.grid(row=0, column=1, padx=10, pady=5)
+
+        label_prodi = ctk.CTkLabel(win, text="Prodi:")
+        label_prodi.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        entry_prodi = ctk.CTkEntry(win)
+        entry_prodi.grid(row=1, column=1, padx=10, pady=5)
+
+        label_angkatan = ctk.CTkLabel(win, text="Angkatan:")
+        label_angkatan.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        entry_angkatan = ctk.CTkEntry(win)
+        entry_angkatan.grid(row=2, column=1, padx=10, pady=5)
+
+        label_matkul = ctk.CTkLabel(win, text="Mata Kuliah yang Dikuasai (pisahkan dengan koma):")
+        label_matkul.grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        entry_matkul = ctk.CTkEntry(win)
+        entry_matkul.grid(row=3, column=1, padx=10, pady=5)
+
+        label_tempat = ctk.CTkLabel(win, text="Tempat Belajar:")
+        label_tempat.grid(row=4, column=0, padx=10, pady=5, sticky="w")
+        entry_tempat = ctk.CTkEntry(win)
+        entry_tempat.grid(row=4, column=1, padx=10, pady=5)
+
+        label_waktu = ctk.CTkLabel(win, text="Waktu Belajar:")
+        label_waktu.grid(row=5, column=0, padx=10, pady=5, sticky="w")
+        entry_waktu = ctk.CTkEntry(win)
+        entry_waktu.grid(row=5, column=1, padx=10, pady=5)
+
+        def do_register():
+            nama = entry_nama.get().strip()
+            prodi = entry_prodi.get().strip()
+            angkatan = entry_angkatan.get().strip()
+            mata_kuliah = entry_matkul.get().strip()
+            tempat_belajar = entry_tempat.get().strip()
+            waktu_belajar = entry_waktu.get().strip()
+            if not nama or not prodi or not angkatan or not mata_kuliah or not tempat_belajar or not waktu_belajar:
+                messagebox.showerror("Error", "Semua field harus diisi!")
+                return
+            try:
+                angkatan_int = int(angkatan)
+            except ValueError:
+                messagebox.showerror("Error", "Angkatan harus berupa angka!")
+                return
+            tutor_data = {
+                "nama": nama,
+                "prodi": prodi,
+                "angkatan": angkatan_int,
+                "mata-kuliah": [m.strip() for m in mata_kuliah.split(",")],
+                "tempat-belajar": tempat_belajar,
+                "waktu-belajar": waktu_belajar
+            }
+            with open(DATA_PATH, encoding="utf-8") as f:
+                data = json.load(f)
+            data.setdefault("tutor", []).append(tutor_data)
+            with open(DATA_PATH, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            messagebox.showinfo("Sukses", f"Pengajar {nama} berhasil didaftarkan!")
+            entry_nama.delete(0, ctk.END)
+            entry_prodi.delete(0, ctk.END)
+            entry_angkatan.delete(0, ctk.END)
+            entry_matkul.delete(0, ctk.END)
+            entry_tempat.delete(0, ctk.END)
+            entry_waktu.delete(0, ctk.END)
+            # Tampilkan kembali window utama dan frame setelah register
+            win.destroy()
+            self.deiconify()
+            self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew",rowspan=2)
+            self.sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew",rowspan=2)
+
+        button_register = ctk.CTkButton(win, text="Register", command=do_register)
+        button_register.grid(row=6, column=0, columnspan=2, pady=20)
+
+        def kembali():
+            win.destroy()
+            self.deiconify()
+            self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew",rowspan=2)
+            self.sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew",rowspan=2)
+
+        button_kembali = ctk.CTkButton(win, text="Kembali", command=kembali)
+        button_kembali.grid(row=7, column=0, columnspan=2, pady=10)
+        
     def searchBar(self):
         topBarFrame = ctk.CTkFrame(
             master=self.mainFrame,

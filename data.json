@@ -71,6 +71,27 @@
       ],
       "tempat-belajar": "A10",
       "waktu-belajar": "9-12"
+    },
+    {
+      "nama": "Zikriw",
+      "prodi": "Teknik Informatika",
+      "angkatan": 2024,
+      "mata-kuliah": [
+        "PBO",
+        "Sisop"
+      ],
+      "tempat-belajar": "A9",
+      "waktu-belajar": "08:00-12:00"
+    },
+    {
+      "nama": "Bang Je",
+      "prodi": "Hukum",
+      "angkatan": 2024,
+      "mata-kuliah": [
+        "Tata Kelola Perundangan"
+      ],
+      "tempat-belajar": "Perpustakaan",
+      "waktu-belajar": "08:00-10:00"
     }
   ],
   "users": [

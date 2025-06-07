@@ -74,7 +74,7 @@ class GUI(ctk.CTk):
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)  # Tambahkan agar mainFrame bisa membesar
+        self.columnconfigure(1, weight=2)  # Tambahkan agar mainFrame bisa membesar
 
         self.mainFrame = ctk.CTkFrame(
             master=self, 

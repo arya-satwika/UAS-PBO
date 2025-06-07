@@ -28,9 +28,7 @@ class User:
     def to_dict(self):
         return {
             "name": self.name,
-            "age": self.age,
-            "email": self.email,
-            "matkul": self.matkul
+            "mata-kuliah": self.matkul
         }
 
     def add_tutor(self):

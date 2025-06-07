@@ -1,52 +1,30 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import json
+import customtkinter as ctk
 import os
 
-DATA_FILE = "data.json"
-#heyo
-def load_users():
-    if not os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "w") as f:
-            json.dump({"tutor": []}, f)
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
-
-def save_users(users):
-    with open(DATA_FILE, "w") as f:
-        json.dump(users, f, indent=2)
+users = "data.json"
 
 class User:
-    def __init__(self, name, age, email=None, matkul=None):
-        self.name = name
-        self.age = age
-        self.email = email
-        self.matkul = matkul
-        self.users = load_users()
-        self.tutors = self.users.get("tutor", [])
-
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "mata-kuliah": self.matkul
-        }
-
-    def add_tutor(self):
-        tutor_dict = self.to_dict()
-        tutor_dict = {k: v for k, v in tutor_dict.items() if v is not None and k != "age"}
-        self.tutors.append(tutor_dict)
-        self.users["tutor"] = self.tutors
-        save_users(self.users)
-
+    def __init__(self):
+        self.tutors=self.loadAllTutors()
+    def loadAllTutors(self):
+        user_list = users.get("tutor", [])
+        return user_list
     def filterByMatkul(self, matkul):
         filtered_list = []
         for filtered_user in self.tutors:
             if matkul in filtered_user.get("matkul", []):
                 filtered_list.append(filtered_user)
         return filtered_list
+    def printAllTutors(self):
+        for user in users.get("tutor", []):
+            print(list(user.values()))
 
-class RegisterTutor:
+class RegisterTutor(ctk.CTk):
     def __init__(self, master):
+        super().__init__()
         self.master = master
         master.title("TutorCerdas")
 
@@ -85,16 +63,140 @@ class RegisterTutor:
         self.entry_email.delete(0, ctk.END)
         self.entry_matkul.delete(0, ctk.END)
 
+
+    
+
+class GUI(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("Tutor App")
+        self.geometry("900x500")
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        # self.minsize(1000, 700)
+        self.frame = ctk.CTkScrollableFrame(master=self,fg_color="#ba2525")
+        self.frame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew")
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
+
+        # self.mainContent = ctk.CTkFrame(
+        #     master=self.frame,
+        #     width=800,
+        #     height=500,
+        #     fg_color="#ba2525",
+        #     corner_radius=20,
+        # )
+        # self.mainContent.grid(row=0,column=1,pady=20, padx=20, sticky="nsew")
+        self.tutors = User().loadAllTutors()
+        # ctk.set_widget_scaling(1.)
+        ctk.set_default_color_theme("green")
+      
+        self.sidebar()
+        for tutor in self.tutors:
+            self.tutorCard(tutor)
+    
+    def sidebar(self):
+        sidebarFrame = ctk.CTkFrame(
+            master=self, 
+            width=100, 
+            height=500,
+            fg_color="#2dbe10",
+            bg_color="#771818",
+            corner_radius=20,
+        )
+        sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew")
+        testlabel= ctk.CTkLabel(
+            master=sidebarFrame,
+            text="Sidebar",
+            font=("Arial", 20, "bold"),
+            fg_color="#2dbe10",
+            bg_color="#771818",
+        )
+        testlabel.grid(row=0,column=0,pady=20, padx=20)
+    def tutorCard(self, tutor):
+        card = ctk.CTkFrame(
+            master=self.frame, 
+            width=1200,  
+            height=250,
+            fg_color="#029b26",
+            corner_radius=40,
+        )
+        card.pack(pady=20, padx=20, expand=True,side="top", anchor="n")
+        namaTutor = ctk.CTkLabel(
+            master=card, 
+            text=f"{tutor['nama']}", 
+            font=("Gotham", 24, "bold"),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        namaTutor.grid(row=0,column=0,padx=10, pady=5, sticky="w")
+        frame_matkul= ctk.CTkFrame(
+            master=card, 
+            width=200, 
+            height=50,
+            bg_color="red",
+            fg_color="red",
+            corner_radius=400,
+        )
+        frame_matkul.grid(row=1,column=0,pady=0, padx=0,sticky="w")
+        matkul_label = ctk.CTkLabel(
+            master=frame_matkul, 
+            width=20,
+            text=f"Mata Kuliah: {', '.join(tutor['mata-kuliah'])}", 
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            wraplength=400,
+            bg_color="blue",
+        )
+        matkul_label.grid(row=0,column=0,padx=10, pady=10, sticky="w",)
+        inner_frame = ctk.CTkFrame(
+            master=card,
+            width=200,
+            height=100,
+            bg_color="#5ad6ff",
+            fg_color="#5ad6ff",
+            corner_radius=20,
+        )
+        inner_frame.grid(row=2,column=0,pady=0, padx=0, sticky="ew")
+        waktu_label = ctk.CTkLabel(
+            master=inner_frame, 
+            text=f"Waktu Belajar: {tutor['waktu-belajar']}", 
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        waktu_label.pack(padx=(10,5), pady=0,side="left")
+        tempat_label = ctk.CTkLabel(
+            master=inner_frame, 
+            text=f"Tempat Belajar: {tutor['tempat-belajar']}", 
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        tempat_label.pack(padx=5, pady=0,side="left")
+        button_chat = ctk.CTkButton(
+            master=card, 
+            text="Chat", 
+            font=("Arial", 16),
+            command=lambda: print(f"Chat with {tutor['nama']}"),
+            corner_radius=20,
+            height=40,
+            width=100,
+            fg_color="#4CAF50",
+            hover_color="#45a049",
+        )
+        button_chat.grid(row=0,column=1,pady=10, padx=10)
+        button_chat.grid_columnconfigure(1, weight=1)
+    def run(self):
+        self.mainloop()
+    
 if __name__ == "__main__":
-    root = ctk.CTk()
-    app = RegisterTutor(root)
-    root.mainloop()
-
-users = json.load(open("data.json"))
-
-class matkul:
-    def __init__(self, name, code):
-        self.name = name
-        self.code = code
-
-
+    user = User()
+    register=RegisterTutor()
+    gui = GUI()
+    gui.run()

@@ -290,136 +290,6 @@ class RegisterTutor(ctk.CTkToplevel):
         messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.destroy()
 
-class ProfileWindow(ctk.CTkToplevel):
-    def __init__(self, master):
-        super().__init__(master)
-        self.title("Profil Pengguna")
-        self.geometry("400x500")
-        self.resizable(False, False)
-        
-        # Center the window
-        self.center_window()
-        
-        # Configure grid
-        self.grid_columnconfigure(0, weight=1)
-        
-        # Main container
-        self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
-        self.main_container.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
-        self.main_container.grid_columnconfigure(0, weight=1)
-        
-        # Profile icon and title
-        self.title_label = ctk.CTkLabel(
-            self.main_container, 
-            text="👤 Profil Pengguna", 
-            font=("Helvetica", 24, "bold"),
-            text_color="#1f6f8b"
-        )
-        self.title_label.grid(row=0, column=0, pady=(20, 30))
-        
-        # User info frame
-        self.info_frame = ctk.CTkFrame(self.main_container, fg_color="#f8f9fa", corner_radius=15)
-        self.info_frame.grid(row=1, column=0, sticky="ew", padx=30, pady=(0, 20))
-        self.info_frame.grid_columnconfigure(0, weight=1)
-        
-        # Username
-        self.username_label = ctk.CTkLabel(
-            self.info_frame,
-            text=f"🏷️ Username: {current_user['username']}",
-            font=("Helvetica", 16, "bold"),
-            text_color="#333333",
-            anchor="w"
-        )
-        self.username_label.grid(row=0, column=0, sticky="w", padx=20, pady=(15, 10))
-        
-        # User type
-        user_type_text = {
-            "admin": "👑 Administrator",
-            "student": "🎓 Mahasiswa", 
-            "tutor": "👨‍🏫 Pengajar"
-        }.get(current_user['type'], "👤 Pengguna")
-        
-        self.type_label = ctk.CTkLabel(
-            self.info_frame,
-            text=f"📋 Tipe: {user_type_text}",
-            font=("Helvetica", 14),
-            text_color="#555555",
-            anchor="w"
-        )
-        self.type_label.grid(row=1, column=0, sticky="w", padx=20, pady=(0, 15))
-        
-        # Additional info based on user type
-        if current_user['type'] == 'student':
-            data = current_user['data']
-            self.major_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"🎯 Jurusan: {data.get('major', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.major_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            self.year_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📅 Angkatan: {data.get('class_year', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.year_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 15))
-            
-        elif current_user['type'] == 'tutor':
-            data = current_user['data']
-            self.name_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📝 Nama: {data.get('nama', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.name_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            self.email_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📧 Email: {data.get('email', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.email_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            matkul_text = ", ".join(data.get('mata-kuliah', []))
-            self.matkul_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📚 Mata Kuliah: {matkul_text}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.matkul_label.grid(row=4, column=0, sticky="w", padx=20, pady=(0, 15))
-        
-        # Close button
-        self.close_button = ctk.CTkButton(
-            self.main_container,
-            text="✅ Tutup",
-            font=("Helvetica", 16, "bold"),
-            height=45,
-            corner_radius=15,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
-            command=self.destroy
-        )
-        self.close_button.grid(row=2, column=0, sticky="ew", padx=30, pady=(0, 20))
-    
-    def center_window(self):
-        """Center the window on screen"""
-        self.update_idletasks()
-        width = self.winfo_width()
-        height = self.winfo_height()
-        x = (self.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.winfo_screenheight() // 2) - (height // 2)
-        self.geometry(f"{width}x{height}+{x}+{y}")
 
 class LoginPage(ctk.CTk):
     def __init__(self):
@@ -630,17 +500,6 @@ class GUI(ctk.CTk):
         bottom_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
         
-        # Profile button
-        profile_btn = ctk.CTkButton(
-            bottom_frame, 
-            text=f"👤 {current_user['username'][:12]}{'...' if len(current_user['username']) > 12 else ''}", 
-            fg_color="#6c757d", 
-            hover_color="#5a6268",
-            font=("Helvetica", 12, "bold"),
-            height=35,
-            command=self.open_profile
-        )
-        profile_btn.pack(fill="x", pady=(0, 10))
         
         # Logout button
         logout_btn = ctk.CTkButton(
@@ -667,10 +526,6 @@ class GUI(ctk.CTk):
 
     def open_register_window(self):
         RegisterTutor(self)
-
-    def open_profile(self):
-        """Open profile window"""
-        ProfileWindow(self)
 
     def open_chat(self, tutor_data):
         """Open chat window with specific tutor"""

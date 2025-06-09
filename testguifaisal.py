@@ -19,25 +19,6 @@ except FileNotFoundError:
 # Global variable to store current user info
 current_user = {"username": "", "type": "", "data": {}}
 
-# Hardcoded tutor responses
-TUTOR_RESPONSES = [
-    "Halo! Saya siap membantu Anda belajar. Ada materi apa yang ingin dipelajari?",
-    "Terima kasih sudah menghubungi saya. Kapan waktu yang tepat untuk memulai les?",
-    "Saya bisa membantu menjelaskan konsep yang sulit. Bagian mana yang perlu dijelaskan?",
-    "Mari kita atur jadwal belajar yang sesuai dengan waktu Anda.",
-    "Saya akan memberikan materi tambahan untuk memperdalam pemahaman Anda.",
-    "Jangan ragu untuk bertanya jika ada yang kurang jelas ya!",
-    "Kita bisa mulai dari dasar-dasar terlebih dahulu, bagaimana?",
-    "Saya punya beberapa tips belajar yang efektif untuk mata kuliah ini.",
-    "Apakah Anda sudah mencoba mengerjakan soal-soal latihan?",
-    "Bagaimana kalau kita buat grup study untuk diskusi lebih lanjut?",
-    "Saya bisa memberikan referensi buku yang bagus untuk materi ini.",
-    "Mari kita fokus pada topik yang akan keluar di ujian nanti.",
-    "Saya akan buatkan rangkuman materi untuk memudahkan belajar Anda.",
-    "Kalau ada PR yang sulit, bisa langsung tanya ke saya ya!",
-    "Kita bisa pakai metode pembelajaran yang lebih interaktif."
-]
-
 class User:
     def __init__(self):
         self.tutors = self.loadAllTutors()
@@ -136,7 +117,13 @@ class ChatWindow(ctk.CTkToplevel):
         self.message_entry.focus()
         
         # Add welcome message
-        self.add_tutor_message("Halo! Saya siap membantu Anda belajar. Silakan tanyakan apa saja! 😊")
+        # Use the first response or a default for the welcome message
+        tutor_responses = users.get("tutor_responses", [])
+        if tutor_responses:
+            welcome_message = tutor_responses[0] # Get the first message
+        else:
+            welcome_message = "Halo! Saya siap membantu Anda belajar. Silakan tanyakan apa saja! 😊" # Default if no responses
+        self.add_tutor_message(welcome_message)
     
     def center_window(self):
         """Center the window on screen"""
@@ -241,8 +228,15 @@ class ChatWindow(ctk.CTkToplevel):
         self.after(100, self.scroll_to_bottom)
     
     def generate_tutor_reply(self):
-        """Generate automatic tutor reply"""
-        reply = random.choice(TUTOR_RESPONSES)
+        """Generate a random reply from the tutor."""
+        tutor_responses = users.get("tutor_responses", [])
+        # Ensure we don't use the first response if there are multiple, to keep it for the welcome
+        if len(tutor_responses) > 1:
+            reply = random.choice(tutor_responses[1:])
+        elif tutor_responses: # Only one response, use it
+            reply = tutor_responses[0]
+        else: # Default if no responses
+            reply = "Maaf, saya tidak mengerti."
         self.add_tutor_message(reply)
     
     def scroll_to_bottom(self):
@@ -296,7 +290,136 @@ class RegisterTutor(ctk.CTkToplevel):
         messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.destroy()
 
-
+class ProfileWindow(ctk.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.title("Profil Pengguna")
+        self.geometry("400x500")
+        self.resizable(False, False)
+        
+        # Center the window
+        self.center_window()
+        
+        # Configure grid
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main container
+        self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
+        self.main_container.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
+        self.main_container.grid_columnconfigure(0, weight=1)
+        
+        # Profile icon and title
+        self.title_label = ctk.CTkLabel(
+            self.main_container, 
+            text="👤 Profil Pengguna", 
+            font=("Helvetica", 24, "bold"),
+            text_color="#1f6f8b"
+        )
+        self.title_label.grid(row=0, column=0, pady=(20, 30))
+        
+        # User info frame
+        self.info_frame = ctk.CTkFrame(self.main_container, fg_color="#f8f9fa", corner_radius=15)
+        self.info_frame.grid(row=1, column=0, sticky="ew", padx=30, pady=(0, 20))
+        self.info_frame.grid_columnconfigure(0, weight=1)
+        
+        # Username
+        self.username_label = ctk.CTkLabel(
+            self.info_frame,
+            text=f"🏷️ Username: {current_user['username']}",
+            font=("Helvetica", 16, "bold"),
+            text_color="#333333",
+            anchor="w"
+        )
+        self.username_label.grid(row=0, column=0, sticky="w", padx=20, pady=(15, 10))
+        
+        # User type
+        user_type_text = {
+            "admin": "👑 Administrator",
+            "student": "🎓 Mahasiswa", 
+            "tutor": "👨‍🏫 Pengajar"
+        }.get(current_user['type'], "👤 Pengguna")
+        
+        self.type_label = ctk.CTkLabel(
+            self.info_frame,
+            text=f"📋 Tipe: {user_type_text}",
+            font=("Helvetica", 14),
+            text_color="#555555",
+            anchor="w"
+        )
+        self.type_label.grid(row=1, column=0, sticky="w", padx=20, pady=(0, 15))
+        
+        # Additional info based on user type
+        if current_user['type'] == 'student':
+            data = current_user['data']
+            self.major_label = ctk.CTkLabel(
+                self.info_frame,
+                text=f"🎯 Jurusan: {data.get('major', 'N/A')}",
+                font=("Helvetica", 14),
+                text_color="#555555",
+                anchor="w"
+            )
+            self.major_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
+            
+            self.year_label = ctk.CTkLabel(
+                self.info_frame,
+                text=f"📅 Angkatan: {data.get('class_year', 'N/A')}",
+                font=("Helvetica", 14),
+                text_color="#555555",
+                anchor="w"
+            )
+            self.year_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 15))
+            
+        elif current_user['type'] == 'tutor':
+            data = current_user['data']
+            self.name_label = ctk.CTkLabel(
+                self.info_frame,
+                text=f"📝 Nama: {data.get('nama', 'N/A')}",
+                font=("Helvetica", 14),
+                text_color="#555555",
+                anchor="w"
+            )
+            self.name_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
+            
+            self.email_label = ctk.CTkLabel(
+                self.info_frame,
+                text=f"📧 Email: {data.get('email', 'N/A')}",
+                font=("Helvetica", 14),
+                text_color="#555555",
+                anchor="w"
+            )
+            self.email_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 10))
+            
+            matkul_text = ", ".join(data.get('mata-kuliah', []))
+            self.matkul_label = ctk.CTkLabel(
+                self.info_frame,
+                text=f"📚 Mata Kuliah: {matkul_text}",
+                font=("Helvetica", 14),
+                text_color="#555555",
+                anchor="w"
+            )
+            self.matkul_label.grid(row=4, column=0, sticky="w", padx=20, pady=(0, 15))
+        
+        # Close button
+        self.close_button = ctk.CTkButton(
+            self.main_container,
+            text="✅ Tutup",
+            font=("Helvetica", 16, "bold"),
+            height=45,
+            corner_radius=15,
+            fg_color="#1f6f8b",
+            hover_color="#145374",
+            command=self.destroy
+        )
+        self.close_button.grid(row=2, column=0, sticky="ew", padx=30, pady=(0, 20))
+    
+    def center_window(self):
+        """Center the window on screen"""
+        self.update_idletasks()
+        width = self.winfo_width()
+        height = self.winfo_height()
+        x = (self.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.winfo_screenheight() // 2) - (height // 2)
+        self.geometry(f"{width}x{height}+{x}+{y}")
 
 class LoginPage(ctk.CTk):
     def __init__(self):
@@ -404,18 +527,6 @@ class LoginPage(ctk.CTk):
         )
         self.login_button.grid(row=0, column=0, sticky="ew")
         
-        # Sign up button
-        self.signup_button = ctk.CTkButton(
-            self.button_frame,
-            text="📝 Daftar Mahasiswa",
-            font=("Helvetica", 16, "bold"),
-            height=45,
-            corner_radius=15,
-            fg_color="#28a745",
-            hover_color="#218838",
-            command=self.open_student_register
-        )
-        self.signup_button.grid(row=1, column=0, sticky="ew", pady=(10, 0))
         
         # Register tutor link
         self.register_label = ctk.CTkLabel(
@@ -456,20 +567,6 @@ class LoginPage(ctk.CTk):
             messagebox.showerror("Error", "Username dan password harus diisi!")
             return
         
-        # Check admin credentials
-        admin_users = users.get("admin", [])
-        for admin in admin_users:
-            if admin.get("username") == username and admin.get("password") == password:
-                current_user = {
-                    "username": username,
-                    "type": "admin",
-                    "data": admin
-                }
-                messagebox.showinfo("Sukses", f"Selamat datang, {username}!")
-                self.open_main_app()
-                return
-        
-        # Check student credentials
         student_users = users.get("users", [])
         for student in student_users:
             if student.get("username") == username and student.get("password") == password:
@@ -501,10 +598,6 @@ class LoginPage(ctk.CTk):
     def open_tutor_register(self, event=None):
         """Open tutor registration window"""
         RegisterTutor(self)
-    
-    def open_student_register(self):
-        """Open student registration window"""
-        RegisterStudent(self)
     
     def open_main_app(self):
         """Open main application and close login window"""

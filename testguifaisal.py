@@ -481,6 +481,12 @@ class GUI(ctk.CTk):
         self.user_instance = User()
         self.current_filter = None
         self.current_tutors = self.user_instance.loadAllTutors()
+        
+        # Get all unique mata kuliah for dropdown
+        self.all_matkul = set()
+        for tutor in self.user_instance.loadAllTutors():
+            self.all_matkul.update(tutor.get("mata-kuliah", []))
+        self.all_matkul = sorted(list(self.all_matkul))
 
         self.sidebar()
         self.main_area()
@@ -518,13 +524,15 @@ class GUI(ctk.CTk):
         
         # Search and filter section
         self.search_frame = ctk.CTkFrame(self.content_container, corner_radius=15, fg_color="#f8f9fa")
-        self.search_frame.pack(fill="x", padx=15, pady=(15, 10))
+        self.search_frame.pack(fill="x", padx=15, pady=15)
+        
+        # Configure grid for search frame
         self.search_frame.grid_columnconfigure(1, weight=1)
         
         # Search label
         search_label = ctk.CTkLabel(
             self.search_frame,
-            text="🔍 Cari Tutor:",
+            text="🔍 Cari:",
             font=("Helvetica", 14, "bold"),
             text_color="#333333"
         )
@@ -540,6 +548,36 @@ class GUI(ctk.CTk):
         self.search_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=15)
         self.search_entry.bind('<KeyRelease>', self.on_search_change)
         
+        # Filter label
+        filter_label = ctk.CTkLabel(
+            self.search_frame,
+            text="📚 Filter:",
+            font=("Helvetica", 14, "bold"),
+            text_color="#333333"
+        )
+        filter_label.grid(row=0, column=2, padx=(10, 10), pady=15, sticky="w")
+        
+        # Filter dropdown
+        self.filter_var = ctk.StringVar(value="Semua Mata Kuliah")
+        
+        # Create dropdown options with "Semua Mata Kuliah" as first option
+        dropdown_options = ["Semua Mata Kuliah"] + self.all_matkul
+        
+        self.filter_dropdown = ctk.CTkOptionMenu(
+            self.search_frame,
+            values=dropdown_options,
+            variable=self.filter_var,
+            width=200,
+            height=35,
+            font=("Helvetica", 14),
+            dropdown_font=("Helvetica", 14),
+            fg_color="#1f6f8b",
+            button_color="#1f6f8b",
+            button_hover_color="#145374",
+            command=self.on_filter_change
+        )
+        self.filter_dropdown.grid(row=0, column=3, padx=(0, 15), pady=15, sticky="e")
+        
         # Search button
         search_btn = ctk.CTkButton(
             self.search_frame,
@@ -550,55 +588,16 @@ class GUI(ctk.CTk):
             hover_color="#145374",
             command=self.search_tutors
         )
-        search_btn.grid(row=0, column=2, padx=(0, 15), pady=15)
+        search_btn.grid(row=0, column=4, padx=(0, 15), pady=15)
         
-        # Filter section
-        self.filter_frame = ctk.CTkFrame(self.content_container, corner_radius=15, fg_color="#e9ecef")
-        self.filter_frame.pack(fill="x", padx=15, pady=(0, 10))
-        
-        # Filter label
-        filter_label = ctk.CTkLabel(
-            self.filter_frame,
-            text="📚 Filter Mata Kuliah:",
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333"
-        )
-        filter_label.pack(anchor="w", padx=15, pady=(15, 10))
-        
-        # Get all unique mata kuliah
-        all_matkul = set()
-        for tutor in self.user_instance.loadAllTutors():
-            all_matkul.update(tutor.get("mata-kuliah", []))
-        
-        # Filter buttons container
-        self.filter_buttons_frame = ctk.CTkFrame(self.filter_frame, fg_color="transparent")
-        self.filter_buttons_frame.pack(fill="x", padx=15, pady=(0, 15))
-        
-        # Show All button
-        show_all_btn = ctk.CTkButton(
-            self.filter_buttons_frame,
-            text="📋 Semua",
+        # Status label
+        self.status_label = ctk.CTkLabel(
+            self.content_container,
+            text="",
             font=("Helvetica", 12),
-            height=30,
-            fg_color="#6c757d",
-            hover_color="#5a6268",
-            command=self.show_all_tutors
+            text_color="#666666"
         )
-        show_all_btn.pack(side="left", padx=(0, 5), pady=2)
-        
-        # Create filter buttons for each mata kuliah
-        for i, matkul in enumerate(sorted(all_matkul)):
-            if matkul:  # Skip empty strings
-                btn = ctk.CTkButton(
-                    self.filter_buttons_frame,
-                    text=f"📖 {matkul}",
-                    font=("Helvetica", 12),
-                    height=30,
-                    fg_color="#1f6f8b",
-                    hover_color="#145374",
-                    command=lambda m=matkul: self.filter_by_matkul(m)
-                )
-                btn.pack(side="left", padx=5, pady=2)
+        self.status_label.pack(anchor="w", padx=20, pady=(0, 5))
         
         # Tutors display area (scrollable)
         self.main_frame = ctk.CTkScrollableFrame(self.content_container, corner_radius=15)
@@ -611,10 +610,53 @@ class GUI(ctk.CTk):
             self.search_tutors()
         else:
             # If search is empty, show current filter or all tutors
-            if self.current_filter:
-                self.filter_by_matkul(self.current_filter)
+            self.apply_current_filter()
+
+    def on_filter_change(self, choice):
+        """Handle filter dropdown change"""
+        if choice == "Semua Mata Kuliah":
+            self.current_filter = None
+        else:
+            self.current_filter = choice
+        
+        self.apply_current_filter()
+    
+    def apply_current_filter(self):
+        """Apply the current filter and search term"""
+        search_term = self.search_entry.get().strip().lower()
+        
+        if self.current_filter:
+            # Filter by mata kuliah
+            filtered_tutors = self.user_instance.filterByMatkul(self.current_filter)
+            self.current_tutors = filtered_tutors
+            
+            # Apply search if there's a search term
+            if search_term:
+                filtered_tutors = [t for t in filtered_tutors if search_term in t.get("nama", "").lower()]
+            
+            self.display_tutors(filtered_tutors)
+            
+            # Update status
+            if filtered_tutors:
+                status_text = f"Menampilkan {len(filtered_tutors)} tutor untuk mata kuliah '{self.current_filter}'"
             else:
-                self.show_all_tutors()
+                status_text = f"Tidak ada tutor untuk mata kuliah '{self.current_filter}'"
+            
+            self.show_status_message(status_text)
+        else:
+            # Show all tutors
+            all_tutors = self.user_instance.loadAllTutors()
+            self.current_tutors = all_tutors
+            
+            # Apply search if there's a search term
+            if search_term:
+                all_tutors = [t for t in all_tutors if search_term in t.get("nama", "").lower()]
+            
+            self.display_tutors(all_tutors)
+            
+            # Update status
+            status_text = f"Menampilkan semua {len(all_tutors)} tutor"
+            self.show_status_message(status_text)
 
     def search_tutors(self):
         """Search tutors by name"""
@@ -622,10 +664,7 @@ class GUI(ctk.CTk):
         
         if not search_term:
             # If search is empty, show current filter or all tutors
-            if self.current_filter:
-                self.filter_by_matkul(self.current_filter)
-            else:
-                self.show_all_tutors()
+            self.apply_current_filter()
             return
         
         # Filter tutors by name
@@ -644,44 +683,6 @@ class GUI(ctk.CTk):
         else:
             status_text = f"Tidak ada tutor dengan nama '{search_term}'"
         
-        self.show_status_message(status_text)
-
-    def filter_by_matkul(self, matkul):
-        """Filter tutors by mata kuliah using the User class method"""
-        self.current_filter = matkul
-        filtered_tutors = self.user_instance.filterByMatkul(matkul)
-        self.current_tutors = filtered_tutors
-        
-        # Apply search if there's a search term
-        search_term = self.search_entry.get().strip().lower()
-        if search_term:
-            filtered_tutors = [t for t in filtered_tutors if search_term in t.get("nama", "").lower()]
-        
-        self.display_tutors(filtered_tutors)
-        
-        # Update status
-        if filtered_tutors:
-            status_text = f"Menampilkan {len(filtered_tutors)} tutor untuk mata kuliah '{matkul}'"
-        else:
-            status_text = f"Tidak ada tutor untuk mata kuliah '{matkul}'"
-        
-        self.show_status_message(status_text)
-
-    def show_all_tutors(self):
-        """Show all tutors"""
-        self.current_filter = None
-        all_tutors = self.user_instance.loadAllTutors()
-        self.current_tutors = all_tutors
-        
-        # Apply search if there's a search term
-        search_term = self.search_entry.get().strip().lower()
-        if search_term:
-            all_tutors = [t for t in all_tutors if search_term in t.get("nama", "").lower()]
-        
-        self.display_tutors(all_tutors)
-        
-        # Update status
-        status_text = f"Menampilkan semua {len(all_tutors)} tutor"
         self.show_status_message(status_text)
 
     def display_tutors(self, tutors):
@@ -705,13 +706,26 @@ class GUI(ctk.CTk):
                 self.tutor_card(tutor)
 
     def show_status_message(self, message):
-        """Show status message (you can implement this as a temporary label)"""
-        # This could be implemented as a status bar or temporary message
-        print(f"Status: {message}")  # For now, just print to console
+        """Show status message in the status label"""
+        self.status_label.configure(text=message)
 
     def refresh_tutors(self):
         """Refresh the tutor display"""
-        self.show_all_tutors()
+        # Reset filter dropdown
+        self.filter_var.set("Semua Mata Kuliah")
+        self.current_filter = None
+        
+        # Clear search
+        self.search_entry.delete(0, 'end')
+        
+        # Show all tutors
+        all_tutors = self.user_instance.loadAllTutors()
+        self.current_tutors = all_tutors
+        self.display_tutors(all_tutors)
+        
+        # Update status
+        status_text = f"Menampilkan semua {len(all_tutors)} tutor"
+        self.show_status_message(status_text)
 
     def open_register_window(self):
         RegisterTutor(self)

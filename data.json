@@ -1,5 +1,5 @@
 {
-    "tutor":[
+    "tutor": [
         {
             "nama": "Astuti",
             "angkatan": 2022,
@@ -7,7 +7,7 @@
             "tempat-belajar": "FC Ketintang",
             "waktu-belajar": "15.00 - 17.00",
             "mata-kuliah": [
-                "Struktur Data", 
+                "Struktur Data",
                 "Pemrograman Berorientasi Objek",
                 "Statistika",
                 "Matetmatika Diskrit"
@@ -22,7 +22,7 @@
             "mata-kuliah": [
                 "Pemrograman Dasar",
                 "Sains Komputasi",
-                "Rekayasa Perangkat Lunak" 
+                "Rekayasa Perangkat Lunak"
             ]
         },
         {
@@ -31,7 +31,7 @@
             "prodi": "Teknik Informatika",
             "tempat-belajar": "Gedung A10",
             "mata-kuliah": [
-                "Statistika", 
+                "Statistika",
                 "Basis Data",
                 "Keamanan Data dan Informasi"
             ],
@@ -44,7 +44,7 @@
             "tempat-belajar": "FC Ketintang",
             "waktu-belajar": "15.00 - 17.00",
             "mata-kuliah": [
-                "Struktur Data", 
+                "Struktur Data",
                 "Pemrograman Berorientasi Objek",
                 "Statistika",
                 "Matetmatika Diskrit"
@@ -57,10 +57,72 @@
             "tempat-belajar": "FC Ketintang",
             "waktu-belajar": "15.00 - 17.00",
             "mata-kuliah": [
-                "Basis Data", 
+                "Basis Data",
                 "Sistem Operasi",
                 "Literasi Digital"
             ]
+        },
+        {
+            "nama": "Zain",
+            "prodi": "TI",
+            "angkatan": 24,
+            "mata-kuliah": [
+                "APA aja"
+            ],
+            "tempat-belajar": "A10",
+            "waktu-belajar": "9-12"
+        },
+        {
+            "nama": "Zikriw",
+            "prodi": "Teknik Informatika",
+            "angkatan": 2024,
+            "mata-kuliah": [
+                "PBO",
+                "Sisop"
+            ],
+            "tempat-belajar": "A9",
+            "waktu-belajar": "08:00-12:00"
+        },
+        {
+            "nama": "Bang Je",
+            "prodi": "Hukum",
+            "angkatan": 2024,
+            "mata-kuliah": [
+                "Tata Kelola Perundangan"
+            ],
+            "tempat-belajar": "Perpustakaan",
+            "waktu-belajar": "08:00-10:00"
         }
+    ],
+    "users": [
+        {
+            "username": "user3",
+            "password": "user1231",
+            "angkata": "2022",
+            "prodi": "dqwdqwdqd"
+        },
+        {
+            "username": "user2",
+            "password": "uasdasdwq",
+            "angkata": "2021",
+            "prodi": "adwdwd"
+        }
+    ],
+    "tutor_responses": [
+        "Halo! Saya siap membantu Anda belajar. Ada materi apa yang ingin dipelajari?",
+        "Terima kasih sudah menghubungi saya. Kapan waktu yang tepat untuk memulai les?",
+        "Saya bisa membantu menjelaskan konsep yang sulit. Bagian mana yang perlu dijelaskan?",
+        "Mari kita atur jadwal belajar yang sesuai dengan waktu Anda.",
+        "Saya akan memberikan materi tambahan untuk memperdalam pemahaman Anda.",
+        "Jangan ragu untuk bertanya jika ada yang kurang jelas ya!",
+        "Kita bisa mulai dari dasar-dasar terlebih dahulu, bagaimana?",
+        "Saya punya beberapa tips belajar yang efektif untuk mata kuliah ini.",
+        "Apakah Anda sudah mencoba mengerjakan soal-soal latihan?",
+        "Bagaimana kalau kita buat grup study untuk diskusi lebih lanjut?",
+        "Saya bisa memberikan referensi buku yang bagus untuk materi ini.",
+        "Mari kita fokus pada topik yang akan keluar di ujian nanti.",
+        "Saya akan buatkan rangkuman materi untuk memudahkan belajar Anda.",
+        "Kalau ada PR yang sulit, bisa langsung tanya ke saya ya!",
+        "Kita bisa pakai metode pembelajaran yang lebih interaktif."
     ]
 }

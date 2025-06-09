@@ -117,12 +117,11 @@ class ChatWindow(ctk.CTkToplevel):
         self.message_entry.focus()
         
         # Add welcome message
-        # Use the first response or a default for the welcome message
         tutor_responses = users.get("tutor_responses", [])
         if tutor_responses:
-            welcome_message = tutor_responses[0] # Get the first message
+            welcome_message = tutor_responses[0]
         else:
-            welcome_message = "Halo! Saya siap membantu Anda belajar. Silakan tanyakan apa saja! 😊" # Default if no responses
+            welcome_message = "Halo! Saya siap membantu Anda belajar. Silakan tanyakan apa saja! 😊"
         self.add_tutor_message(welcome_message)
     
     def center_window(self):
@@ -230,12 +229,11 @@ class ChatWindow(ctk.CTkToplevel):
     def generate_tutor_reply(self):
         """Generate a random reply from the tutor."""
         tutor_responses = users.get("tutor_responses", [])
-        # Ensure we don't use the first response if there are multiple, to keep it for the welcome
         if len(tutor_responses) > 1:
             reply = random.choice(tutor_responses[1:])
-        elif tutor_responses: # Only one response, use it
+        elif tutor_responses:
             reply = tutor_responses[0]
-        else: # Default if no responses
+        else:
             reply = "Maaf, saya tidak mengerti."
         self.add_tutor_message(reply)
     
@@ -290,142 +288,10 @@ class RegisterTutor(ctk.CTkToplevel):
         messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.destroy()
 
-class ProfileWindow(ctk.CTkToplevel):
-    def __init__(self, master):
-        super().__init__(master)
-        self.title("Profil Pengguna")
-        self.geometry("400x500")
-        self.resizable(False, False)
-        
-        # Center the window
-        self.center_window()
-        
-        # Configure grid
-        self.grid_columnconfigure(0, weight=1)
-        
-        # Main container
-        self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
-        self.main_container.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
-        self.main_container.grid_columnconfigure(0, weight=1)
-        
-        # Profile icon and title
-        self.title_label = ctk.CTkLabel(
-            self.main_container, 
-            text="👤 Profil Pengguna", 
-            font=("Helvetica", 24, "bold"),
-            text_color="#1f6f8b"
-        )
-        self.title_label.grid(row=0, column=0, pady=(20, 30))
-        
-        # User info frame
-        self.info_frame = ctk.CTkFrame(self.main_container, fg_color="#f8f9fa", corner_radius=15)
-        self.info_frame.grid(row=1, column=0, sticky="ew", padx=30, pady=(0, 20))
-        self.info_frame.grid_columnconfigure(0, weight=1)
-        
-        # Username
-        self.username_label = ctk.CTkLabel(
-            self.info_frame,
-            text=f"🏷️ Username: {current_user['username']}",
-            font=("Helvetica", 16, "bold"),
-            text_color="#333333",
-            anchor="w"
-        )
-        self.username_label.grid(row=0, column=0, sticky="w", padx=20, pady=(15, 10))
-        
-        # User type
-        user_type_text = {
-            "admin": "👑 Administrator",
-            "student": "🎓 Mahasiswa", 
-            "tutor": "👨‍🏫 Pengajar"
-        }.get(current_user['type'], "👤 Pengguna")
-        
-        self.type_label = ctk.CTkLabel(
-            self.info_frame,
-            text=f"📋 Tipe: {user_type_text}",
-            font=("Helvetica", 14),
-            text_color="#555555",
-            anchor="w"
-        )
-        self.type_label.grid(row=1, column=0, sticky="w", padx=20, pady=(0, 15))
-        
-        # Additional info based on user type
-        if current_user['type'] == 'student':
-            data = current_user['data']
-            self.major_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"🎯 Jurusan: {data.get('major', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.major_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            self.year_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📅 Angkatan: {data.get('class_year', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.year_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 15))
-            
-        elif current_user['type'] == 'tutor':
-            data = current_user['data']
-            self.name_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📝 Nama: {data.get('nama', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.name_label.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            self.email_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📧 Email: {data.get('email', 'N/A')}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.email_label.grid(row=3, column=0, sticky="w", padx=20, pady=(0, 10))
-            
-            matkul_text = ", ".join(data.get('mata-kuliah', []))
-            self.matkul_label = ctk.CTkLabel(
-                self.info_frame,
-                text=f"📚 Mata Kuliah: {matkul_text}",
-                font=("Helvetica", 14),
-                text_color="#555555",
-                anchor="w"
-            )
-            self.matkul_label.grid(row=4, column=0, sticky="w", padx=20, pady=(0, 15))
-        
-        # Close button
-        self.close_button = ctk.CTkButton(
-            self.main_container,
-            text="✅ Tutup",
-            font=("Helvetica", 16, "bold"),
-            height=45,
-            corner_radius=15,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
-            command=self.destroy
-        )
-        self.close_button.grid(row=2, column=0, sticky="ew", padx=30, pady=(0, 20))
-    
-    def center_window(self):
-        """Center the window on screen"""
-        self.update_idletasks()
-        width = self.winfo_width()
-        height = self.winfo_height()
-        x = (self.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.winfo_screenheight() // 2) - (height // 2)
-        self.geometry(f"{width}x{height}+{x}+{y}")
-
 class LoginPage(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Login - Tutor Cerdas")
-        # Set a larger initial size to prevent cutting off
         self.geometry("600x550")
         ctk.set_default_color_theme("green")
         
@@ -527,7 +393,6 @@ class LoginPage(ctk.CTk):
         )
         self.login_button.grid(row=0, column=0, sticky="ew")
         
-        
         # Register tutor link
         self.register_label = ctk.CTkLabel(
             self.main_container,
@@ -611,6 +476,11 @@ class GUI(ctk.CTk):
         self.title("Tutor Cerdas")
         self.geometry("950x600")
         ctk.set_default_color_theme("green")
+        
+        # Initialize user instance and current filter
+        self.user_instance = User()
+        self.current_filter = None
+        self.current_tutors = self.user_instance.loadAllTutors()
 
         self.sidebar()
         self.main_area()
@@ -626,21 +496,9 @@ class GUI(ctk.CTk):
         register_btn = ctk.CTkButton(sidebar, text="➕ Daftarkan Tutor", command=self.open_register_window)
         register_btn.pack(pady=10)
         
-        # Bottom section frame for profile and logout
+        # Bottom section frame for logout
         bottom_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
         bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
-        
-        # Profile button
-        profile_btn = ctk.CTkButton(
-            bottom_frame, 
-            text=f"👤 {current_user['username'][:12]}{'...' if len(current_user['username']) > 12 else ''}", 
-            fg_color="#6c757d", 
-            hover_color="#5a6268",
-            font=("Helvetica", 12, "bold"),
-            height=35,
-            command=self.open_profile
-        )
-        profile_btn.pack(fill="x", pady=(0, 10))
         
         # Logout button
         logout_btn = ctk.CTkButton(
@@ -654,23 +512,209 @@ class GUI(ctk.CTk):
         logout_btn.pack(fill="x")
 
     def main_area(self):
-        self.main_frame = ctk.CTkScrollableFrame(self, corner_radius=15)
-        self.main_frame.pack(expand=True, fill="both", padx=10, pady=10)
+        # Main content container
+        self.content_container = ctk.CTkFrame(self, corner_radius=15)
+        self.content_container.pack(expand=True, fill="both", padx=10, pady=10)
+        
+        # Search and filter section
+        self.search_frame = ctk.CTkFrame(self.content_container, corner_radius=15, fg_color="#f8f9fa")
+        self.search_frame.pack(fill="x", padx=15, pady=(15, 10))
+        self.search_frame.grid_columnconfigure(1, weight=1)
+        
+        # Search label
+        search_label = ctk.CTkLabel(
+            self.search_frame,
+            text="🔍 Cari Tutor:",
+            font=("Helvetica", 14, "bold"),
+            text_color="#333333"
+        )
+        search_label.grid(row=0, column=0, padx=(15, 10), pady=15, sticky="w")
+        
+        # Search entry
+        self.search_entry = ctk.CTkEntry(
+            self.search_frame,
+            placeholder_text="Cari berdasarkan nama tutor...",
+            font=("Helvetica", 14),
+            height=35
+        )
+        self.search_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=15)
+        self.search_entry.bind('<KeyRelease>', self.on_search_change)
+        
+        # Search button
+        search_btn = ctk.CTkButton(
+            self.search_frame,
+            text="🔍",
+            width=40,
+            height=35,
+            fg_color="#1f6f8b",
+            hover_color="#145374",
+            command=self.search_tutors
+        )
+        search_btn.grid(row=0, column=2, padx=(0, 15), pady=15)
+        
+        # Filter section
+        self.filter_frame = ctk.CTkFrame(self.content_container, corner_radius=15, fg_color="#e9ecef")
+        self.filter_frame.pack(fill="x", padx=15, pady=(0, 10))
+        
+        # Filter label
+        filter_label = ctk.CTkLabel(
+            self.filter_frame,
+            text="📚 Filter Mata Kuliah:",
+            font=("Helvetica", 14, "bold"),
+            text_color="#333333"
+        )
+        filter_label.pack(anchor="w", padx=15, pady=(15, 10))
+        
+        # Get all unique mata kuliah
+        all_matkul = set()
+        for tutor in self.user_instance.loadAllTutors():
+            all_matkul.update(tutor.get("mata-kuliah", []))
+        
+        # Filter buttons container
+        self.filter_buttons_frame = ctk.CTkFrame(self.filter_frame, fg_color="transparent")
+        self.filter_buttons_frame.pack(fill="x", padx=15, pady=(0, 15))
+        
+        # Show All button
+        show_all_btn = ctk.CTkButton(
+            self.filter_buttons_frame,
+            text="📋 Semua",
+            font=("Helvetica", 12),
+            height=30,
+            fg_color="#6c757d",
+            hover_color="#5a6268",
+            command=self.show_all_tutors
+        )
+        show_all_btn.pack(side="left", padx=(0, 5), pady=2)
+        
+        # Create filter buttons for each mata kuliah
+        for i, matkul in enumerate(sorted(all_matkul)):
+            if matkul:  # Skip empty strings
+                btn = ctk.CTkButton(
+                    self.filter_buttons_frame,
+                    text=f"📖 {matkul}",
+                    font=("Helvetica", 12),
+                    height=30,
+                    fg_color="#1f6f8b",
+                    hover_color="#145374",
+                    command=lambda m=matkul: self.filter_by_matkul(m)
+                )
+                btn.pack(side="left", padx=5, pady=2)
+        
+        # Tutors display area (scrollable)
+        self.main_frame = ctk.CTkScrollableFrame(self.content_container, corner_radius=15)
+        self.main_frame.pack(expand=True, fill="both", padx=15, pady=(0, 15))
 
-    def refresh_tutors(self):
+    def on_search_change(self, event=None):
+        """Handle search as user types"""
+        search_term = self.search_entry.get().strip().lower()
+        if search_term:
+            self.search_tutors()
+        else:
+            # If search is empty, show current filter or all tutors
+            if self.current_filter:
+                self.filter_by_matkul(self.current_filter)
+            else:
+                self.show_all_tutors()
+
+    def search_tutors(self):
+        """Search tutors by name"""
+        search_term = self.search_entry.get().strip().lower()
+        
+        if not search_term:
+            # If search is empty, show current filter or all tutors
+            if self.current_filter:
+                self.filter_by_matkul(self.current_filter)
+            else:
+                self.show_all_tutors()
+            return
+        
+        # Filter tutors by name
+        filtered_tutors = []
+        base_tutors = self.current_tutors if self.current_filter else self.user_instance.loadAllTutors()
+        
+        for tutor in base_tutors:
+            if search_term in tutor.get("nama", "").lower():
+                filtered_tutors.append(tutor)
+        
+        self.display_tutors(filtered_tutors)
+        
+        # Update status
+        if filtered_tutors:
+            status_text = f"Ditemukan {len(filtered_tutors)} tutor dengan nama '{search_term}'"
+        else:
+            status_text = f"Tidak ada tutor dengan nama '{search_term}'"
+        
+        self.show_status_message(status_text)
+
+    def filter_by_matkul(self, matkul):
+        """Filter tutors by mata kuliah using the User class method"""
+        self.current_filter = matkul
+        filtered_tutors = self.user_instance.filterByMatkul(matkul)
+        self.current_tutors = filtered_tutors
+        
+        # Apply search if there's a search term
+        search_term = self.search_entry.get().strip().lower()
+        if search_term:
+            filtered_tutors = [t for t in filtered_tutors if search_term in t.get("nama", "").lower()]
+        
+        self.display_tutors(filtered_tutors)
+        
+        # Update status
+        if filtered_tutors:
+            status_text = f"Menampilkan {len(filtered_tutors)} tutor untuk mata kuliah '{matkul}'"
+        else:
+            status_text = f"Tidak ada tutor untuk mata kuliah '{matkul}'"
+        
+        self.show_status_message(status_text)
+
+    def show_all_tutors(self):
+        """Show all tutors"""
+        self.current_filter = None
+        all_tutors = self.user_instance.loadAllTutors()
+        self.current_tutors = all_tutors
+        
+        # Apply search if there's a search term
+        search_term = self.search_entry.get().strip().lower()
+        if search_term:
+            all_tutors = [t for t in all_tutors if search_term in t.get("nama", "").lower()]
+        
+        self.display_tutors(all_tutors)
+        
+        # Update status
+        status_text = f"Menampilkan semua {len(all_tutors)} tutor"
+        self.show_status_message(status_text)
+
+    def display_tutors(self, tutors):
+        """Display the given list of tutors"""
+        # Clear existing tutor cards
         for widget in self.main_frame.winfo_children():
             widget.destroy()
+        
+        if not tutors:
+            # Show no results message
+            no_results_label = ctk.CTkLabel(
+                self.main_frame,
+                text="😔 Tidak ada tutor yang ditemukan",
+                font=("Helvetica", 18),
+                text_color="#666666"
+            )
+            no_results_label.pack(pady=50)
+        else:
+            # Display tutor cards
+            for tutor in tutors:
+                self.tutor_card(tutor)
 
-        tutors = User().loadAllTutors()
-        for tutor in tutors:
-            self.tutor_card(tutor)
+    def show_status_message(self, message):
+        """Show status message (you can implement this as a temporary label)"""
+        # This could be implemented as a status bar or temporary message
+        print(f"Status: {message}")  # For now, just print to console
+
+    def refresh_tutors(self):
+        """Refresh the tutor display"""
+        self.show_all_tutors()
 
     def open_register_window(self):
         RegisterTutor(self)
-
-    def open_profile(self):
-        """Open profile window"""
-        ProfileWindow(self)
 
     def open_chat(self, tutor_data):
         """Open chat window with specific tutor"""
@@ -681,7 +725,7 @@ class GUI(ctk.CTk):
         global current_user
         result = messagebox.askyesno("Logout", "Apakah Anda yakin ingin logout?")
         if result:
-            current_user = {"username": "", "type": "", "data": {}}  # Clear current user
+            current_user = {"username": "", "type": "", "data": {}}
             self.destroy()
             login_app = LoginPage()
             login_app.mainloop()

@@ -15,7 +15,7 @@ class User:
         return users.get("tutor", [])
 
     def filterByMatkul(self, matkul):
-        return [u for u in self.tutors if matkul in u.get("matkul", [])]
+        return [u for u in self.tutors if matkul in u.get("mata-kuliah", [])]
 
 class RegisterTutor(ctk.CTkToplevel):
     def __init__(self, master):

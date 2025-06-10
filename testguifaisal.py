@@ -586,4 +586,6 @@ class GUI(ctk.CTk):
         self.mainloop()
 
 if __name__ == "__main__":
-    # Start with login page
+    #login page
+    gui= GUI(User())
+    gui.run()

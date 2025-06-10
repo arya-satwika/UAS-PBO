@@ -92,16 +92,6 @@
       ],
       "tempat-belajar": "Perpustakaan",
       "waktu-belajar": "08:00-10:00"
-    },
-    {
-      "nama": "arya",
-      "prodi": "TI",
-      "angkatan": 2023,
-      "mata-kuliah": [
-        "PBO"
-      ],
-      "tempat-belajar": "cafe",
-      "waktu-belajar": "09:00"
     }
   ],
   "users": [

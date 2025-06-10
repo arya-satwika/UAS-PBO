@@ -20,7 +20,7 @@ def save_payment(data):
         json.dump(payment, f, indent=4)
 
 class User:
-    def _init_(self):
+    def __init__(self):
         self.tutors=self.loadAllTutors()
     def loadAllTutors(self):
         user_list = users.get("tutor", [])
@@ -36,8 +36,8 @@ class User:
             print(list(user.values()))
 
 class RegisterTutor(ctk.CTk):
-    def _init_(self, master):
-        super()._init_()
+    def __init__(self, master):
+        super().__init__()
         self.master = master
         master.title("TutorCerdas")
 
@@ -77,8 +77,8 @@ class RegisterTutor(ctk.CTk):
         self.entry_matkul.delete(0, ctk.END)
 
 class GUI(ctk.CTk):
-    def _init_(self):
-        super()._init_()
+    def __init__(self):
+        super().__init__()
         self.title("Tutor App")
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
@@ -269,7 +269,7 @@ class GUI(ctk.CTk):
     def run(self):
         self.mainloop()
     
-if __name__ == "_main_":
+if __name__ == "__main__":
     user = User()
     # register=RegisterTutor()
     gui = GUI()

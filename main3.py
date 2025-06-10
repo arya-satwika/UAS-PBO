@@ -20,7 +20,7 @@ def save_payment(data):
         json.dump(payment, f, indent=4)
 
 class User:
-    def _init_(self):
+    def __init__(self):
         self.tutors=self.loadAllTutors()
     def loadAllTutors(self):
         user_list = users.get("tutor", [])
@@ -36,8 +36,16 @@ class User:
             print(list(user.values()))
 
 class RegisterTutor(ctk.CTk):
-    def _init_(self, master):
-        super()._init_()
+    def __init__(self, master):
+        super().__init__()
+        self.title("Tutor App")
+        self.geometry("900x500")
+
+        self.saldo_user = 100000
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+
         self.master = master
         master.title("TutorCerdas")
 
@@ -77,8 +85,8 @@ class RegisterTutor(ctk.CTk):
         self.entry_matkul.delete(0, ctk.END)
 
 class GUI(ctk.CTk):
-    def _init_(self):
-        super()._init_()
+    def __init__(self):
+        super().__init__()
         self.title("Tutor App")
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
@@ -128,10 +136,19 @@ class GUI(ctk.CTk):
             fg_color="#029b26",
             corner_radius=40,
         )
-        card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
-        card.grid_columnconfigure(0, weight=1)
-        card.grid_columnconfigure(1, weight=0)
-        namaTutor = ctk.CTkLabel(
+    def handle_chat(tutor_data):
+        harga = tutor_data["harga"]
+        if  self.saldo_user < harga:
+             messagebox.showwarning("Saldo Tidak Cukup", f"Saldo Anda tidak mencukupi untuk membayar Rp{harga}")
+             return
+    
+            self.saldo_user -= harga
+            messagebox.showinfo("Chat Dimulai", f"Anda telah membayar Rp{harga} untuk chat dengan {tutor_data['nama']}.\nSaldo tersisa: Rp{self.saldo_user}")
+        
+            card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
+            card.grid_columnconfigure(0, weight=1)
+            card.grid_columnconfigure(1, weight=0)
+         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
             font=("Gotham", 24, "bold"),
@@ -148,6 +165,15 @@ class GUI(ctk.CTk):
             fg_color="red",
             corner_radius=400,
         )
+        harga_label = ctk.CTkLabel(
+            master=card,
+            text=f"Harga: Rp{tutor['harga']}",
+            font=("Arial", 16),
+            anchor="w",
+            justify="left",
+            bg_color="blue",
+        )
+        harga_label.grid(row=0, column=1, padx=10, pady=5, sticky="e")
         frame_matkul.grid(row=1,column=0,pady=0, padx=0,sticky="w")
         matkul_label = ctk.CTkLabel(
             master=frame_matkul, 
@@ -195,20 +221,6 @@ class GUI(ctk.CTk):
             fg_color="#4C74AF",
             corner_radius=20,
         )
-        buttonFrame.grid(row=3,column=1,pady=10, padx=10, sticky="ew")
-        button_chat = ctk.CTkButton(
-            master=buttonFrame, 
-            text="Chat", 
-            font=("Arial", 16),
-            command=lambda: print(f"Chat with {tutor['nama']}"),
-            corner_radius=20,
-            height=40,
-            width=100,
-            fg_color="#4CAF50",
-            hover_color="#45a049",
-            bg_color="#4C74AF",
-        )
-        button_chat.grid(row=0,column=3,pady=10, padx=0, sticky="w")
 
         button_bayar = ctk.CTkButton(
             master=buttonFrame,
@@ -224,7 +236,7 @@ class GUI(ctk.CTk):
         )
         button_bayar.grid(row=0,column=4,pady=10, padx=(10,0), sticky="e")
     
-    def make_payment(self, tutor):
+        def make_payment(self, tutor):
         payment_window = ctk.CTkToplevel(self)
         payment_window.title("Form Pembayaran")
         payment_window.geometry("400x250")
@@ -250,7 +262,6 @@ class GUI(ctk.CTk):
                 return
             data = {
                 "tutor": tutor["nama"],
-                "email": tutor["email"],
                 "amount": int(nominal)
             }
             save_payment(data)
@@ -269,7 +280,7 @@ class GUI(ctk.CTk):
     def run(self):
         self.mainloop()
     
-if __name__ == "_main_":
+if __name__ == "__main__":
     user = User()
     # register=RegisterTutor()
     gui = GUI()

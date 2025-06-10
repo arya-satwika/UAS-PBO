@@ -8,7 +8,7 @@ import datetime
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data.json")
 
-# Load users data
+
 try:
     users = json.load(open(DATA_PATH))
 except FileNotFoundError:
@@ -21,13 +21,25 @@ current_user = {"username": "", "type": "", "data": {}}
 
 class User:
     def __init__(self):
-        self.tutors = self.loadAllTutors()
-
+        self.users = self.loadAllUsers()
+    def addUser(self, user_data):
+        if "users" not in users:
+            users["users"] = []
+        users["users"].append(user_data)
+        with open(DATA_PATH, 'w') as f:
+            json.dump(users, f, indent=4)
     def loadAllTutors(self):
         return users.get("tutor", [])
+    def loadAllUsers(self):
+        return users.get("users", [])
 
     def filterByMatkul(self, matkul):
         return [u for u in self.tutors if matkul in u.get("mata-kuliah", [])]
+    def authUser(self, username, password):
+        for user in self.users.get("users", []):
+            if self.users.get("username") == username and self.users.get("password") == password:
+                return user
+        return None
 
 class ChatWindow(ctk.CTkToplevel):
     def __init__(self, master, tutor_data):
@@ -288,190 +300,10 @@ class RegisterTutor(ctk.CTkToplevel):
         messagebox.showinfo("Sukses", f"Pengajar {name} berhasil didaftarkan!")
         self.destroy()
 
-class LoginPage(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Login - Tutor Cerdas")
-        self.geometry("600x550")
-        ctk.set_default_color_theme("green")
-        
-        # Configure grid for responsive layout
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        
-        # Create main container with padding
-        self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
-        self.main_container.grid(row=0, column=0, padx=40, pady=40, sticky="nsew")
-        
-        # Configure main container grid
-        self.main_container.grid_columnconfigure(0, weight=1)
-        
-        # Title
-        self.title_label = ctk.CTkLabel(
-            self.main_container, 
-            text="📚 Tutor Cerdas", 
-            font=("Helvetica", 28, "bold"),
-            text_color="#1f6f8b"
-        )
-        self.title_label.grid(row=0, column=0, pady=(30, 10))
-        
-        # Subtitle
-        self.subtitle_label = ctk.CTkLabel(
-            self.main_container, 
-            text="Masuk ke akun Anda", 
-            font=("Helvetica", 16),
-            text_color="#666666"
-        )
-        self.subtitle_label.grid(row=1, column=0, pady=(0, 30))
-        
-        # Username field container
-        self.username_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.username_frame.grid(row=2, column=0, sticky="ew", padx=40)
-        self.username_frame.grid_columnconfigure(0, weight=1)
-        
-        self.username_label = ctk.CTkLabel(
-            self.username_frame, 
-            text="👤 Username:", 
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333",
-            anchor="w"
-        )
-        self.username_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
-        
-        self.username_entry = ctk.CTkEntry(
-            self.username_frame,
-            placeholder_text="Masukkan username",
-            font=("Helvetica", 14),
-            height=40,
-            corner_radius=10,
-            border_width=2,
-            border_color="#d1d1d1"
-        )
-        self.username_entry.grid(row=1, column=0, sticky="ew")
-        
-        # Password field container
-        self.password_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.password_frame.grid(row=3, column=0, sticky="ew", padx=40, pady=(20, 0))
-        self.password_frame.grid_columnconfigure(0, weight=1)
-        
-        self.password_label = ctk.CTkLabel(
-            self.password_frame, 
-            text="🔒 Password:", 
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333",
-            anchor="w"
-        )
-        self.password_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
-        
-        self.password_entry = ctk.CTkEntry(
-            self.password_frame,
-            placeholder_text="Masukkan password",
-            show="*",
-            font=("Helvetica", 14),
-            height=40,
-            corner_radius=10,
-            border_width=2,
-            border_color="#d1d1d1"
-        )
-        self.password_entry.grid(row=1, column=0, sticky="ew")
-        
-        # Button container
-        self.button_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.button_frame.grid(row=4, column=0, sticky="ew", padx=40, pady=(30, 0))
-        self.button_frame.grid_columnconfigure(0, weight=1)
-        
-        # Login button
-        self.login_button = ctk.CTkButton(
-            self.button_frame,
-            text="🚀 Masuk",
-            font=("Helvetica", 16, "bold"),
-            height=45,
-            corner_radius=15,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
-            command=self.login
-        )
-        self.login_button.grid(row=0, column=0, sticky="ew")
-        
-        # Register tutor link
-        self.register_label = ctk.CTkLabel(
-            self.main_container,
-            text="Ingin mengajar? Daftar sebagai tutor",
-            font=("Helvetica", 12),
-            text_color="#1f6f8b",
-            cursor="hand2"
-        )
-        self.register_label.grid(row=5, column=0, pady=(20, 30))
-        self.register_label.bind("<Button-1>", self.open_tutor_register)
-        
-        # Bind Enter key to login
-        self.bind('<Return>', lambda event: self.login())
-        
-        # Focus on username entry
-        self.username_entry.focus()
-        
-        # Center window after all widgets are added
-        self.after(100, self.center_window)
-    
-    def center_window(self):
-        """Center the window on screen after ensuring it's fully rendered"""
-        self.update_idletasks()
-        width = self.winfo_width()
-        height = self.winfo_height()
-        x = (self.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.winfo_screenheight() // 2) - (height // 2)
-        self.geometry(f"{width}x{height}+{x}+{y}")
-    
-    def login(self):
-        """Handle login authentication"""
-        global current_user
-        username = self.username_entry.get().strip()
-        password = self.password_entry.get().strip()
-        
-        if not username or not password:
-            messagebox.showerror("Error", "Username dan password harus diisi!")
-            return
-        
-        student_users = users.get("users", [])
-        for student in student_users:
-            if student.get("username") == username and student.get("password") == password:
-                current_user = {
-                    "username": username,
-                    "type": "student",
-                    "data": student
-                }
-                messagebox.showinfo("Sukses", f"Selamat datang, {username}!")
-                self.open_main_app()
-                return
-        
-        # Check tutor credentials (using email as username)
-        tutor_users = users.get("tutor", [])
-        for tutor in tutor_users:
-            if tutor.get("email") == username:
-                current_user = {
-                    "username": tutor.get("nama", username),
-                    "type": "tutor",
-                    "data": tutor
-                }
-                messagebox.showinfo("Sukses", f"Selamat datang, {tutor.get('nama')}!")
-                self.open_main_app()
-                return
-        
-        messagebox.showerror("Error", "Username atau password salah!")
-        self.password_entry.delete(0, 'end')
-    
-    def open_tutor_register(self, event=None):
-        """Open tutor registration window"""
-        RegisterTutor(self)
-    
-    def open_main_app(self):
-        """Open main application and close login window"""
-        self.destroy()
-        main_app = GUI()
-        main_app.run()
 
 class GUI(ctk.CTk):
-    def __init__(self):
+    def __init__(self, user):
+        self.user_instance = user
         super().__init__()
         self.title("Tutor Cerdas")
         self.geometry("950x600")
@@ -501,21 +333,7 @@ class GUI(ctk.CTk):
 
         register_btn = ctk.CTkButton(sidebar, text="➕ Daftarkan Tutor", command=self.open_register_window)
         register_btn.pack(pady=10)
-        
-        # Bottom section frame for logout
-        bottom_frame = ctk.CTkFrame(sidebar, fg_color="transparent")
-        bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
-        
-        # Logout button
-        logout_btn = ctk.CTkButton(
-            bottom_frame, 
-            text="🚪 Logout", 
-            fg_color="#dc3545", 
-            hover_color="#c82333",
-            height=35,
-            command=self.logout
-        )
-        logout_btn.pack(fill="x")
+
 
     def main_area(self):
         # Main content container
@@ -734,15 +552,7 @@ class GUI(ctk.CTk):
         """Open chat window with specific tutor"""
         ChatWindow(self, tutor_data)
 
-    def logout(self):
-        """Logout and return to login page"""
-        global current_user
-        result = messagebox.askyesno("Logout", "Apakah Anda yakin ingin logout?")
-        if result:
-            current_user = {"username": "", "type": "", "data": {}}
-            self.destroy()
-            login_app = LoginPage()
-            login_app.mainloop()
+    
 
     def tutor_card(self, tutor):
         card = ctk.CTkFrame(self.main_frame, fg_color="#ffffff", corner_radius=20, border_width=1, border_color="#d1d1d1")
@@ -776,6 +586,6 @@ class GUI(ctk.CTk):
         self.mainloop()
 
 if __name__ == "__main__":
-    # Start with login page
-    login_app = LoginPage()
-    login_app.mainloop()
+    #login page
+    gui= GUI(User())
+    gui.run()

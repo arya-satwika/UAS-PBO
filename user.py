@@ -1,3 +1,63 @@
-print("gutten morgen")
 import os
-import sys
+import json
+import customtkinter as ctk
+
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "data.json")
+
+
+try:
+    data = json.load(open(DATA_PATH))
+except FileNotFoundError:
+    print("File not found")
+
+users_list = data.get("users", [])
+tutors_list = data.get("tutors", [])
+
+class User:
+    def __init__(self):
+        self.username = ""
+        self.password = ""
+        self.role = ""
+        self.saldo = {}
+    def addUser(self, user_data):
+        if "users" not in data:
+            data["users"] = []
+        data["users"].append(user_data)
+        with open(DATA_PATH, 'w') as f:
+            json.dump(data, f, indent=4)
+    # def getUserByUsername(self, username):
+    #     for user in self.users_list:
+    #         if user.get("username") == username:
+    #             return user
+    #     return None
+    def filterByMatkul(self, matkul):
+        return [tutor for tutor in tutors_list if matkul in tutor.get("mata-kuliah", [])]
+    def authUser(self, username, password):
+        for user in users_list:
+            if user.get("username") == username and users_list.get("password") == password:
+                self.username = user.get("username")
+                self.password = user.get("password")
+                self.saldo = user.get("saldo", {})
+                self.role = user.get("role")
+                return True
+        return False
+    def updateJson(self):
+        for user in data.get("users", []):
+            if user.get("username") == self.username:
+                user["password"] = self.password
+                user["role"] = self.role
+                user["saldo"] = self.saldo
+                break
+        with open(DATA_PATH, 'w') as f:
+            json.dump(data, f, indent=4)
+    def register_tutor(self, harga, matkul, waktu_belajar, tempat_belajar):
+        data["tutor"].append({
+            "nama": self.username,
+            "harga": harga,
+            "mata-kuliah": [matkul],
+            "waktu-belajar": waktu_belajar,
+            "tempat-belajar": tempat_belajar
+        })

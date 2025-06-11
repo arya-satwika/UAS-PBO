@@ -3,7 +3,6 @@ import os
 import json
 import random
 import datetime
-from user import User
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "tutor_responses.json")

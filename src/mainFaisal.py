@@ -1,11 +1,7 @@
-import os
-import json
 import customtkinter as ctk
-import random
-import datetime
-from user import User
-from chatwindow import ChatWindow
-from registerTutor import RegisterTutor
+from src.user import User
+from src.chatwindow import ChatWindow
+from src.registerTutor import RegisterTutor
 
 class GUI(ctk.CTk):
     def __init__(self, user):

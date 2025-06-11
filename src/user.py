@@ -1,13 +1,8 @@
 import os
 import json
-import customtkinter as ctk
-
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data.json")
-
-
 try:
     data = json.load(open(DATA_PATH))
 except FileNotFoundError:

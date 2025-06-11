@@ -40,7 +40,7 @@ class RegisterTutor(ctk.CTkToplevel):
         
         self.name_label = ctk.CTkLabel(
             self.name_frame, 
-            text=f"👤 Nama: {self.current_user.username}", 
+            text=f"👤 {self.current_user.username} Mendaftar sebagai pengajar!", 
             font=("Helvetica", 20, "bold"),
             text_color="#333333",
             anchor="w"
@@ -48,7 +48,31 @@ class RegisterTutor(ctk.CTkToplevel):
         self.name_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
         
         
+        # Harga field
+        self.harga_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
+        self.harga_frame.grid(row=2, column=0, sticky="ew", padx=30, pady=(0, 15))
+        self.harga_frame.grid_columnconfigure(0, weight=1)
         
+        self.harga_label = ctk.CTkLabel(
+            self.harga_frame, 
+            text="📚 Harga  :", 
+            font=("Helvetica", 14, "bold"),
+            text_color="#333333",
+            anchor="w"
+        )
+        self.harga_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
+        
+        self.harga_entry = ctk.CTkEntry(
+            self.harga_frame,
+            placeholder_text="Contoh: 19000",
+            font=("Helvetica", 14),
+            height=40,
+            corner_radius=10,
+            border_width=2,
+            border_color="#d1d1d1"
+        )
+        self.harga_entry.grid(row=1, column=0, sticky="ew")
+
         # Mata Kuliah field
         self.matkul_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
         self.matkul_frame.grid(row=3, column=0, sticky="ew", padx=30, pady=(0, 15))
@@ -73,7 +97,8 @@ class RegisterTutor(ctk.CTkToplevel):
             border_color="#d1d1d1"
         )
         self.matkul_entry.grid(row=1, column=0, sticky="ew")
-        
+
+
         # Waktu Belajar field
         self.waktu_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
         self.waktu_frame.grid(row=4, column=0, sticky="ew", padx=30, pady=(0, 15))
@@ -171,7 +196,7 @@ class RegisterTutor(ctk.CTkToplevel):
         self.geometry(f"{width}x{height}+{x}+{y}")
 
     def register_tutor(self):
-        if self.current_user.register_tutor(self.entry_harga.get(), self.entry_matkul.get(), self.waktu_entry.get(), self.tempat_entry.get()):
+        if self.current_user.register_tutor(self.entry_harga.get(), self.matkul_entry.get(), self.waktu_entry.get(), self.tempat_entry.get()):
             self.current_user.role = "pengajar"
             self.current_user.updateJson()
             messagebox.showinfo("Sukses", f"Pengajar {self.current_user.username} berhasil didaftarkan!")

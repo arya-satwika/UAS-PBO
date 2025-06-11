@@ -1,7 +1,7 @@
 import customtkinter as ctk
-from src.user import User
-from src.chatwindow import ChatWindow
-from src.registerTutor import RegisterTutor
+from user import User
+from chatwindow import ChatWindow
+from registerTutor import RegisterTutor
 
 class GUI(ctk.CTk):
     def __init__(self, user):

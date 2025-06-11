@@ -23,6 +23,8 @@ class User:
         data["users"].append(user_data)
         with open(DATA_PATH, 'w') as f:
             json.dump(data, f, indent=4)
+    def loadAllTutors(self):
+        return data.get("tutor", [])
     # def getUserByUsername(self, username):
     #     for user in self.users_list:
     #         if user.get("username") == username:

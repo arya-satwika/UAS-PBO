@@ -1,24 +1,32 @@
 import customtkinter as ctk
+import os
+import json
 from tkinter import messagebox
-from src.user import User
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "data.json")
+
+# Load users data
+try:
+    users = json.load(open(DATA_PATH))
+except FileNotFoundError:
+    users = {"tutor": [], "admin": [{"username": "admin", "password": "admin123"}], "students": []}
+    with open(DATA_PATH, 'w') as f:
+        json.dump(users, f, indent=4)
 
 class RegisterTutor(ctk.CTkToplevel):
-    def __init__(self, master,user):
+    def __init__(self, master):
         super().__init__(master)
         self.title("Daftar Pengajar")
         self.geometry("600x700")
         self.resizable(False, False)
-        self.current_user = user
+        
         # Center the window
         self.center_window()
         
         # Configure grid
         self.grid_columnconfigure(0, weight=1)
         
-        if self.current_user.role == "pengajar":
-            messagebox.showinfo("Info", "Anda sudah terdaftar sebagai pengajar.")
-            self.destroy()
-            return
         # Main container
         self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
         self.main_container.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
@@ -205,9 +213,7 @@ class RegisterTutor(ctk.CTkToplevel):
         self.geometry(f"{width}x{height}+{x}+{y}")
 
     def register_tutor(self):
-        if self.current_user.register_tutor(self.entry_harga.get(), self.entry_matkul.get(), self.waktu_entry.get(), self.tempat_entry.get()):
-            self.current_user.role = "pengajar"
-            self.current_user.updateJson()
+        if self.current_user.register_tutor(self.entry_harga.get(), self.entry_matkul.get(), "Online", "Online"):
             messagebox.showinfo("Sukses", f"Pengajar {self.current_user.username} berhasil didaftarkan!")
             self.destroy()
         else:

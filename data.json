@@ -93,6 +93,54 @@
             "password": "uasdasdwq",
             "angkatan": "2021",
             "prodi": "adwdwd"
+        },
+        {
+            "username": "Astuti",
+            "password": "123456",
+            "role": "tutor",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "saldo": 500000
+        },
+        {
+            "username": "Mikhael",
+            "angkatan": 2023,
+            "prodi": "Sistem Informasi",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 600000
+        },
+        {
+            "username": "Khidir Karawita",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 700000
+        },
+        {
+            "username": "sigma boy",
+            "angkatan": 2012,
+            "prodi": "Teknik Informatika",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 500000
+        },
+        {
+            "username": "Juminten",
+            "angkatan": 2023,
+            "prodi": "Pendidikan Teknolo Informasi",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 550000
+        },
+        {
+            "username": "Bang Je",
+            "angkatan": 2024,
+            "prodi": "Hukum",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 800000
         }
     ]
     

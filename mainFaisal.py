@@ -230,11 +230,9 @@ class GUI(ctk.CTk):
                 self.tutor_card(tutor)
 
     def show_status_message(self, message):
-        """Show status message in the status label"""
         self.status_label.configure(text=message)
 
     def refresh_tutors(self):
-        """Refresh the tutor display"""
         # Reset filter dropdown
         self.filter_var.set("Semua Mata Kuliah")
         self.current_filter = None
@@ -252,7 +250,7 @@ class GUI(ctk.CTk):
         self.show_status_message(status_text)
 
     def open_register_window(self):
-        RegisterTutor(self)
+        RegisterTutor(self, self.user_instance)
 
     def open_chat(self, tutor_data):
         """Open chat window with specific tutor"""

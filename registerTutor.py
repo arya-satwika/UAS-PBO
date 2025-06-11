@@ -40,48 +40,14 @@ class RegisterTutor(ctk.CTkToplevel):
         
         self.name_label = ctk.CTkLabel(
             self.name_frame, 
-            text="👤 Nama Pengajar:", 
-            font=("Helvetica", 14, "bold"),
+            text=f"👤 Nama: {self.current_user.username}", 
+            font=("Helvetica", 20, "bold"),
             text_color="#333333",
             anchor="w"
         )
         self.name_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
         
-        self.name_entry = ctk.CTkEntry(
-            self.name_frame,
-            placeholder_text="Masukkan nama lengkap",
-            font=("Helvetica", 14),
-            height=40,
-            corner_radius=10,
-            border_width=2,
-            border_color="#d1d1d1"
-        )
-        self.name_entry.grid(row=1, column=0, sticky="ew")
         
-        # Email field
-        self.email_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.email_frame.grid(row=2, column=0, sticky="ew", padx=30, pady=(0, 15))
-        self.email_frame.grid_columnconfigure(0, weight=1)
-        
-        self.email_label = ctk.CTkLabel(
-            self.email_frame, 
-            text="📧 Email:", 
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333",
-            anchor="w"
-        )
-        self.email_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
-        
-        self.email_entry = ctk.CTkEntry(
-            self.email_frame,
-            placeholder_text="contoh@email.com",
-            font=("Helvetica", 14),
-            height=40,
-            corner_radius=10,
-            border_width=2,
-            border_color="#d1d1d1"
-        )
-        self.email_entry.grid(row=1, column=0, sticky="ew")
         
         # Mata Kuliah field
         self.matkul_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
@@ -189,8 +155,8 @@ class RegisterTutor(ctk.CTkToplevel):
         )
         self.cancel_button.grid(row=0, column=1, sticky="ew", padx=(10, 0))
         
-        # Focus on name entry
-        self.name_entry.focus()
+        # # Focus on name entry
+        # self.name_entry.focus()
         
         # Bind Enter key to register
         self.bind('<Return>', lambda event: self.register_tutor())

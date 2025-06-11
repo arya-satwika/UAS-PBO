@@ -31,7 +31,7 @@ class User:
     #             return user
     #     return None
     def filterByMatkul(self, matkul):
-        return [tutor for tutor in tutors_list if matkul in tutor.get("mata-kuliah", [])]
+        return [tutor for tutor in self.loadAllTutors() if matkul in tutor.get("mata-kuliah", [])]
     def authUser(self, username, password):
         for user in users_list:
             if user.get("username") == username and users_list.get("password") == password:
@@ -53,8 +53,10 @@ class User:
     def register_tutor(self, harga, matkul, waktu_belajar, tempat_belajar):
         data["tutor"].append({
             "nama": self.username,
-            "harga": harga,
-            "mata-kuliah": [matkul],
+            "prodi": self.prodi,
+            "angkatan": self.angkatan,
+            "tempat-belajar": tempat_belajar,
             "waktu-belajar": waktu_belajar,
-            "tempat-belajar": tempat_belajar
+            "mata-kuliah": [matkul],
+            "harga": harga
         })

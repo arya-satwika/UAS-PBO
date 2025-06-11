@@ -1,4 +1,5 @@
 import customtkinter as ctk
+ctk.set_appearance_mode("dark")
 from tkinter import messagebox
 from user import User
 

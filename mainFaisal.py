@@ -1,4 +1,6 @@
 import customtkinter as ctk
+# ctk.set_appearance_mode("dark")
+from theme import color_pallete
 from user import User
 from chatwindow import ChatWindow
 from registerTutor import RegisterTutor
@@ -8,11 +10,13 @@ class GUI(ctk.CTk):
         self.user_instance = user
         super().__init__()
         self.title("Tutor Cerdas")
-        self.geometry("950x600")
-        ctk.set_default_color_theme("green")
-        
+        self.geometry("1100x700")
+        ctk.set_default_color_theme("blue")
+        self.resizable(True, True)
+        self.configure(fg_color=color_pallete["background"])
         # Initialize user instance and current filter
         self.user_instance = User()
+        self.user_instance.getUserByUsername("user3")
         self.current_filter = None
         self.current_tutors = self.user_instance.loadAllTutors()
         
@@ -27,101 +31,137 @@ class GUI(ctk.CTk):
         self.refresh_tutors()
 
     def sidebar(self):
-        sidebar = ctk.CTkFrame(self, width=200, corner_radius=15)
-        sidebar.pack(side="left", fill="y", padx=10, pady=10)
+        sidebar = ctk.CTkFrame(
+            self,
+            width=300,
+            corner_radius=35,
+            fg_color=color_pallete["sidebar_fill"],
+            border_color=color_pallete["sidebar_border"],
+            border_width=1,
+            )
+        sidebar.pack(side="left", fill="y", padx=20, pady=20)
 
-        title = ctk.CTkLabel(sidebar, text="📚 Tutor Cerdas", font=("Helvetica", 20, "bold"))
-        title.pack(pady=20)
+        title = ctk.CTkLabel(
+            sidebar, 
+            text="Tutorly",
+            font=("Helvetica", 40, "bold"),
+            text_color=color_pallete["text_secondary"]
+            )
+        title.pack(pady=20, padx=70)
 
-        register_btn = ctk.CTkButton(sidebar, text="➕ Daftarkan Tutor", command=self.open_register_window)
-        register_btn.pack(pady=10)
+        register_btn = ctk.CTkButton(
+            sidebar, 
+            text="Daftarkan Tutor",
+            command=self.open_register_window,
+            corner_radius=30,
+            height=50,
+            font=("Helvetica", 20, "bold"),
+            text_color=color_pallete["text_clickable"],
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            border_color=color_pallete["clickable_border"],
+            border_width=1,
+            )
+        register_btn.pack(pady=10, padx=20, fill="x")
 
 
     def main_area(self):
         # Main content container
-        self.content_container = ctk.CTkFrame(self, corner_radius=15)
+        self.content_container = ctk.CTkFrame(self, corner_radius=15, fg_color="transparent")
         self.content_container.pack(expand=True, fill="both", padx=10, pady=10)
         
         # Search and filter section
-        self.search_frame = ctk.CTkFrame(self.content_container, corner_radius=15, fg_color="#f8f9fa")
-        self.search_frame.pack(fill="x", padx=15, pady=15)
+        self.search_frame = ctk.CTkFrame(
+            self.content_container,
+            corner_radius=25,
+            fg_color=color_pallete["highlight_bg"],
+            border_color=color_pallete["highlight_border"],
+            border_width=1,
+            )
+        self.search_frame.pack(fill="x", padx=(5,15), pady=(15,10))
         
         # Configure grid for search frame
         self.search_frame.grid_columnconfigure(1, weight=1)
         
-        # Search label
-        search_label = ctk.CTkLabel(
-            self.search_frame,
-            text="🔍 Cari:",
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333"
-        )
-        search_label.grid(row=0, column=0, padx=(15, 10), pady=15, sticky="w")
+        # # Search label
+        # search_label = ctk.CTkLabel(
+        #     self.search_frame,
+        #     text="Cari:",
+        #     font=("Helvetica", 14, "bold"),
+        #     text_color="#333333"
+        # )
+        # search_label.grid(row=0, column=0, padx=(15, 10), pady=15, sticky="w")
         
         # Search entry
         self.search_entry = ctk.CTkEntry(
             self.search_frame,
-            placeholder_text="Cari berdasarkan nama tutor...",
+            placeholder_text="Search",
+            placeholder_text_color=color_pallete["text_secondary_teal"],
             font=("Helvetica", 14),
+            fg_color=color_pallete["entry_bg"],
+            border_color=color_pallete["entry_border"],
+            corner_radius=25,
             height=35
         )
-        self.search_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=15)
+        self.search_entry.grid(row=0, column=1, sticky="ew", padx=(20, 10), pady=15)
         self.search_entry.bind('<KeyRelease>', self.on_search_change)
         
-        # Filter label
-        filter_label = ctk.CTkLabel(
-            self.search_frame,
-            text="📚 Filter:",
-            font=("Helvetica", 14, "bold"),
-            text_color="#333333"
-        )
-        filter_label.grid(row=0, column=2, padx=(10, 10), pady=15, sticky="w")
+        # # Filter label
+        # filter_label = ctk.CTkLabel(
+        #     self.search_frame,
+        #     text="Filter:",
+        #     font=("Helvetica", 14, "bold"),
+        #     text_color="#333333"
+        # )
+        # filter_label.grid(row=0, column=2, padx=(10, 10), pady=15, sticky="w")
         
         # Filter dropdown
-        self.filter_var = ctk.StringVar(value="Semua Mata Kuliah")
+        self.filter_var = ctk.StringVar(value="Filter")
         
-        # Create dropdown options with "Semua Mata Kuliah" as first option
-        dropdown_options = ["Semua Mata Kuliah"] + self.all_matkul
+        # Create dropdown options with "Filter" as first option
+        dropdown_options = ["Filter"] + self.all_matkul
         
         self.filter_dropdown = ctk.CTkOptionMenu(
             self.search_frame,
             values=dropdown_options,
-            variable=self.filter_var,
+            variable=self.filter_var,   
             width=200,
             height=35,
             font=("Helvetica", 14),
+            text_color=color_pallete["text_clickable"],
+            dropdown_text_color=color_pallete["text_clickable"],
             dropdown_font=("Helvetica", 14),
-            fg_color="#1f6f8b",
-            button_color="#1f6f8b",
-            button_hover_color="#145374",
+            fg_color=color_pallete["clickable_bg"],
+            dropdown_fg_color=color_pallete["clickable_bg"],
+            dropdown_hover_color= color_pallete["clickable_border"],
+            button_color=color_pallete["clickable_bg"],
+            button_hover_color=color_pallete["clickable_border"],
+            corner_radius=20,
             command=self.on_filter_change
         )
         self.filter_dropdown.grid(row=0, column=3, padx=(0, 15), pady=15, sticky="e")
-        
-        # Search button
-        search_btn = ctk.CTkButton(
-            self.search_frame,
-            text="🔍",
-            width=40,
-            height=35,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
-            command=self.search_tutors
-        )
-        search_btn.grid(row=0, column=4, padx=(0, 15), pady=15)
         
         # Status label
         self.status_label = ctk.CTkLabel(
             self.content_container,
             text="",
-            font=("Helvetica", 12),
-            text_color="#666666"
+            font=("Helvetica", 14, "italic"),
+            text_color=color_pallete["text_secondary"],
         )
         self.status_label.pack(anchor="w", padx=20, pady=(0, 5))
         
         # Tutors display area (scrollable)
-        self.main_frame = ctk.CTkScrollableFrame(self.content_container, corner_radius=15)
-        self.main_frame.pack(expand=True, fill="both", padx=15, pady=(0, 15))
+        self.main_frame = ctk.CTkScrollableFrame(
+            self.content_container,
+            corner_radius=25,
+            fg_color=color_pallete["main_bg"],
+            border_color=color_pallete["main_border"],
+            border_width=1,
+            scrollbar_fg_color="transparent",
+            scrollbar_button_color=color_pallete["sidebar_border"],
+            scrollbar_button_hover_color=color_pallete["sidebar_border"],
+        )
+        self.main_frame.pack(expand=True, fill="both", padx=(5,15), pady=(0, 15))
 
     def on_search_change(self, event=None):
         """Handle search as user types"""
@@ -134,7 +174,7 @@ class GUI(ctk.CTk):
 
     def on_filter_change(self, choice):
         """Handle filter dropdown change"""
-        if choice == "Semua Mata Kuliah":
+        if choice == "Filter":
             self.current_filter = None
         else:
             self.current_filter = choice
@@ -230,7 +270,7 @@ class GUI(ctk.CTk):
 
     def refresh_tutors(self):
         # Reset filter dropdown
-        self.filter_var.set("Semua Mata Kuliah")
+        self.filter_var.set("Filter")
         self.current_filter = None
         
         # Clear search
@@ -255,32 +295,60 @@ class GUI(ctk.CTk):
     
 
     def tutor_card(self, tutor):
-        card = ctk.CTkFrame(self.main_frame, fg_color="#ffffff", corner_radius=20, border_width=1, border_color="#d1d1d1")
-        card.pack(pady=10, padx=20, fill="x", expand=True)
+        card = ctk.CTkFrame(
+            self.main_frame,
+            fg_color=color_pallete["card_bg"],
+            border_color=color_pallete["card_border"],
+            corner_radius=25,
+            border_width=1,
+        )
+        card.pack(pady=10, padx=(5, 15), fill="x", expand=True)
 
-        nama_label = ctk.CTkLabel(card, text=f"👤 {tutor['nama']}", font=("Helvetica", 22, "bold"), text_color="#333333")
-        nama_label.pack(anchor="w", padx=20, pady=(10, 5))
+        nama_label = ctk.CTkLabel(
+            card,
+            text=f"👤 {tutor['nama']}",
+            font=("Helvetica", 34, "bold"),
+            text_color=color_pallete["text_primary"]
+        )
+        nama_label.pack(anchor="w", padx=20, pady=20)
 
-        matkul_label = ctk.CTkLabel(card, text=f"📘 Mata Kuliah: {', '.join(tutor['mata-kuliah'])}", font=("Helvetica", 16), text_color="#555555")
+        matkul_label = ctk.CTkLabel(
+            card,
+            text=f"Mata Kuliah: {', '.join(tutor['mata-kuliah'])}", 
+            text_color=color_pallete["text_secondary_teal"],
+            wraplength=550,
+            justify="left",
+            font=("Helvetica", 20),
+        )
         matkul_label.pack(anchor="w", padx=20)
 
-        detail_label = ctk.CTkLabel(card, text=f"⏰ {tutor['waktu-belajar']}   📍 {tutor['tempat-belajar']}", font=("Helvetica", 15), text_color="#666666")
-        detail_label.pack(anchor="w", padx=20, pady=(5, 10))
+        detail_label = ctk.CTkLabel(
+            card,
+            text=f"⏰ {tutor['waktu-belajar']}   📍 {tutor['tempat-belajar']}",
+            text_color=color_pallete["text_secondary"],
+            font=("Segoe UI", 15),
+        )
+        detail_label.pack(anchor="w", padx=20, pady=20)
 
         action_frame = ctk.CTkFrame(card, fg_color="transparent")
         action_frame.pack(anchor="e", padx=20, pady=(0, 10))
 
         chat_button = ctk.CTkButton(
-            action_frame, 
-            text="💬 Chat", 
-            font=("Helvetica", 14), 
-            fg_color="#1f6f8b", 
-            hover_color="#145374", 
-            text_color="white", 
-            corner_radius=10, 
+            action_frame,
+            text="💬 Chat",
+            text_color=color_pallete["text_clickable"],
+            font=("Segoe UI", 20, "bold"),
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            border_color=color_pallete["clickable_border"],
+            border_width=1,
+            corner_radius=30,
+            height=50,
+            width=200,
             command=lambda: self.open_chat(tutor)
         )
-        chat_button.pack()
+        chat_button.pack(padx=10,pady=10, side="right")
+        chat_button.propagate(False)
 
     def run(self):
         self.mainloop()

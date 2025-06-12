@@ -6,8 +6,8 @@
 # Front end
 1. homepage (faisal)
 2. register pengajar (zikri)
-3. login 
-4. user page 
+3. login (sirhan)
+4. user page (miguelle)
 5. bayar : zein
 
 # alur jadi tutor

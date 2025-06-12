@@ -1,112 +1,147 @@
 {
-  "tutor": [
-    {
-      "nama": "Astuti",
-      "angkatan": 2022,
-      "prodi": "Teknik Informatika",
-      "tempat-belajar": "FC Ketintang",
-      "waktu-belajar": "15.00 - 17.00",
-      "mata-kuliah": [
-        "Struktur Data",
-        "Pemrograman Berorientasi Objek",
-        "Statistika",
-        "Matetmatika Diskrit"
-      ]
-    },
-    {
-      "nama": "Mikhael",
-      "angkatan": 2023,
-      "prodi": "Sistem Informasi",
-      "waktu-belajar": "12.00 - 13.00",
-      "tempat-belajar": "Gedung A9",
-      "mata-kuliah": [
-        "Pemrograman Dasar",
-        "Sains Komputasi",
-        "Rekayasa Perangkat Lunak"
-      ]
-    },
-    {
-      "nama": "Khidir Karawita",
-      "angkatan": 2022,
-      "prodi": "Teknik Informatika",
-      "tempat-belajar": "Gedung A10",
-      "mata-kuliah": [
-        "Statistika",
-        "Basis Data",
-        "Keamanan Data dan Informasi"
-      ],
-      "waktu-belajar": "09.00 - 14.00"
-    },
-    {
-      "nama": "sigma boy",
-      "angkatan": 2012,
-      "prodi": "Teknik Informatika",
-      "tempat-belajar": "FC Ketintang",
-      "waktu-belajar": "15.00 - 17.00",
-      "mata-kuliah": [
-        "Struktur Data",
-        "Pemrograman Berorientasi Objek",
-        "Statistika",
-        "Matetmatika Diskrit"
-      ]
-    },
-    {
-      "nama": "Juminten",
-      "angkatan": 2023,
-      "prodi": "Pendidikan Teknolo Informasi",
-      "tempat-belajar": "FC Ketintang",
-      "waktu-belajar": "15.00 - 17.00",
-      "mata-kuliah": [
-        "Basis Data",
-        "Sistem Operasi",
-        "Literasi Digital"
-      ]
-    },
-    {
-      "nama": "Zain",
-      "prodi": "TI",
-      "angkatan": 24,
-      "mata-kuliah": [
-        "APA aja"
-      ],
-      "tempat-belajar": "A10",
-      "waktu-belajar": "9-12"
-    },
-    {
-      "nama": "Zikriw",
-      "prodi": "Teknik Informatika",
-      "angkatan": 2024,
-      "mata-kuliah": [
-        "PBO",
-        "Sisop"
-      ],
-      "tempat-belajar": "A9",
-      "waktu-belajar": "08:00-12:00"
-    },
-    {
-      "nama": "Bang Je",
-      "prodi": "Hukum",
-      "angkatan": 2024,
-      "mata-kuliah": [
-        "Tata Kelola Perundangan"
-      ],
-      "tempat-belajar": "Perpustakaan",
-      "waktu-belajar": "08:00-10:00"
-    }
-  ],
-  "users": [
-    {
-      "username": "admin",
-      "password": "admin123",
-      "role": "admin"
-    },
-    {
-      "username": "sule",
-      "password": "prikitiw",
-      "angkatan": 2023,
-      "prodi": "Sistem Informasi",
-      "role": "user",
-      "saldo": 1000000
-    }
-  ]
+    "tutor": [
+        {
+            "nama": "Astuti",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "tempat-belajar": "FC Ketintang",
+            "waktu-belajar": "15.00 - 17.00",
+            "mata-kuliah": [
+                "Struktur Data",
+                "Pemrograman Berorientasi Objek",
+                "Statistika",
+                "Matetmatika Diskrit"
+            ],
+            "harga": 50000
+        },
+        {
+            "nama": "Mikhael",
+            "angkatan": 2023,
+            "prodi": "Sistem Informasi",
+            "waktu-belajar": "12.00 - 13.00",
+            "tempat-belajar": "Gedung A9",
+            "mata-kuliah": [
+                "Pemrograman Dasar",
+                "Sains Komputasi",
+                "Rekayasa Perangkat Lunak"
+            ],
+            "harga": 60000
+        },
+        {
+            "nama": "Khidir Karawita",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "tempat-belajar": "Gedung A10",
+            "waktu-belajar": "09.00 - 14.00",
+            "mata-kuliah": [
+                "Statistika",
+                "Basis Data",
+                "Keamanan Data dan Informasi"
+            ],
+            "harga": 70000
+        },
+        {
+            "nama": "sigma boy",
+            "angkatan": 2012,
+            "prodi": "Teknik Informatika",
+            "tempat-belajar": "FC Ketintang",
+            "waktu-belajar": "15.00 - 17.00",
+            "mata-kuliah": [
+                "Struktur Data",
+                "Pemrograman Berorientasi Objek",
+                "Statistika",
+                "Matetmatika Diskrit"
+            ],
+            "harga": 50000
+        },
+        {
+            "nama": "Juminten",
+            "angkatan": 2023,
+            "prodi": "Pendidikan Teknolo Informasi",
+            "tempat-belajar": "FC Ketintang",
+            "waktu-belajar": "15.00 - 17.00",
+            "mata-kuliah": [
+                "Basis Data",
+                "Sistem Operasi",
+                "Literasi Digital"
+            ],
+            "harga": 55000
+        },
+        {
+            "nama": "Bang Je",
+            "prodi": "Hukum",
+            "angkatan": 2024,
+            "mata-kuliah": [
+                "Tata Kelola Perundangan"
+            ],
+            "tempat-belajar": "Perpustakaan",
+            "waktu-belajar": "08:00-10:00",
+            "harga": 80000
+        }
+    ],
+    "users": [
+        {
+            "username": "user3",
+            "password": "user1231",
+            "angkatan": "2022",
+            "prodi": "dqwdqwdqd",
+            "saldo": 100000,
+            "role": "user"
+        },
+        {
+            "username": "user2",
+            "password": "uasdasdwq",
+            "angkatan": "2021",
+            "prodi": "adwdwd"
+        },
+        {
+            "username": "Astuti",
+            "password": "123456",
+            "role": "tutor",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "saldo": 500000
+        },
+        {
+            "username": "Mikhael",
+            "angkatan": 2023,
+            "prodi": "Sistem Informasi",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 600000
+        },
+        {
+            "username": "Khidir Karawita",
+            "angkatan": 2022,
+            "prodi": "Teknik Informatika",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 700000
+        },
+        {
+            "username": "sigma boy",
+            "angkatan": 2012,
+            "prodi": "Teknik Informatika",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 500000
+        },
+        {
+            "username": "Juminten",
+            "angkatan": 2023,
+            "prodi": "Pendidikan Teknolo Informasi",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 550000
+        },
+        {
+            "username": "Bang Je",
+            "angkatan": 2024,
+            "prodi": "Hukum",
+            "password": "123456",
+            "role": "tutor",
+            "saldo": 800000
+        }
+    ]
+    
 }

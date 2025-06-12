@@ -293,7 +293,25 @@ class GUI(ctk.CTk):
         ChatWindow(self, tutor_data)
 
     
+    def popup_bayar(self, tutor):
+        self.bayar_window = ctk.CTkToplevel(self)
+        self.bayar_window.title("Bayar Tutor")
+        self.bayar_window.geometry("400x300")
 
+        self.label_judul = ctk.CTkLabel(self.bayar_window, text="Konfirmasi Pembayaran")
+        self.label_judul.pack(pady=10)
+
+        self.label_info = ctk.CTkLabel(self.bayar_window, text=f"Anda akan membayar {tutor['harga']} ke {tutor['nama']}")
+        self.label_info.pack(pady=10)
+        self.buttonFrame = ctk.CTkFrame(self.bayar_window, fg_color="transparent")
+        self.buttonFrame.pack(pady=20)
+        self.button_batal = ctk.CTkButton(self.buttonFrame, text="Batal", command=self.bayar_window.destroy)
+        self.button_batal.pack(side="left", padx=5)
+        self.button_bayar = ctk.CTkButton(self.buttonFrame, text="Bayar", command=lambda: self.handle_bayar(tutor))
+        self.button_bayar.pack(side="right", padx=5)
+    def handle_bayar(self, tutor):
+        self.user_instance.transfer_ke_tutor(tutor)
+        self.open_chat(tutor)
     def tutor_card(self, tutor):
         card = ctk.CTkFrame(
             self.main_frame,
@@ -345,7 +363,7 @@ class GUI(ctk.CTk):
             corner_radius=30,
             height=50,
             width=200,
-            command=lambda: self.open_chat(tutor)
+            command=lambda: self.popup_bayar(tutor)
         )
         chat_button.pack(padx=10,pady=10, side="right")
         chat_button.propagate(False)

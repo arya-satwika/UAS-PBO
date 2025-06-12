@@ -141,7 +141,14 @@
             "password": "123456",
             "role": "tutor",
             "saldo": 800000
+        },
+        {
+            "username": "Ezra Migguelle",
+            "password": "kimochi",
+            "angkatan": "2024",
+            "prodi": "Teknik Informatika",
+            "saldo": 0,
+            "role": "student"
         }
     ]
-    
 }

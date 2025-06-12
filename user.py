@@ -49,11 +49,13 @@ class User:
     
     def authUser(self, username, password):
         for user in users_list:
-            if user.get("username") == username and users_list.get("password") == password:
+            if user.get("username") == username and user.get("password") == password:
                 self.username = user.get("username")
                 self.password = user.get("password")
-                self.saldo = user.get("saldo", {})
+                self.saldo = int(user.get("saldo", 0))
                 self.role = user.get("role")
+                self.prodi = user.get("prodi", "")
+                self.angkatan = user.get("angkatan", "")
                 return True
         return False
     

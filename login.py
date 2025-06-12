@@ -1,5 +1,4 @@
 import os
-import json
 import customtkinter as ctk
 from tkinter import messagebox
 from theme import color_pallete
@@ -170,16 +169,15 @@ class LoginWindow(ctk.CTk):
         user = User()
         if user.authUser(username, password):
             messagebox.showinfo("Success", f"Selamat datang, {username}!")
+            self.quit()
             self.destroy()
             # Open main application with the logged in user
-            user.getUserByUsername(username)
             GUI(user).mainloop()
         else:
             messagebox.showerror("Error", "Username atau password salah!")
             self.password_entry.delete(0, 'end')
     
     def open_register(self):
-        """Open registration window"""
         from register_user import StudentRegister
         self.destroy()
         StudentRegister().mainloop()

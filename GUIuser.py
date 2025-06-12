@@ -16,7 +16,7 @@ class UserProfile(ctk.CTkToplevel):
         self.geometry("800x450")
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
-        self.grab_set()  
+        self.grab_set()
         self.focus_set()
         self.center_window()
         # Sample user data - in real app, this would come from a database
@@ -250,10 +250,11 @@ class UserProfile(ctk.CTkToplevel):
     def topup_saldo(self):
         # Create top-up window
         topup_window = ctk.CTkToplevel(self)
+        topup_window.grab_set()
+        topup_window.focus_set()
         topup_window.title("Top Up Saldo")
         topup_window.geometry("400x300")
         topup_window.transient(self)
-        topup_window.grab_set()
         topup_window.configure(fg_color=color_pallete["background"])
         
         # Center the window
@@ -288,7 +289,7 @@ class UserProfile(ctk.CTkToplevel):
         topup_btn = ctk.CTkButton(
             topup_window,
             text="Top Up",
-            command=lambda: self.user_data.topup_saldo(int(amount_entry.get())),
+            command=lambda: self._handle_topup(amount_entry, topup_window),
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
             text_color=color_pallete["text_clickable"],
@@ -297,3 +298,18 @@ class UserProfile(ctk.CTkToplevel):
             corner_radius=20
         )
         topup_btn.pack(pady=20)
+
+    def _handle_topup(self, amount_entry, topup_window):
+        try:
+            amount = int(amount_entry.get())
+            if amount > 0:
+                self.user_data.topup_saldo(amount)
+                messagebox.showinfo("Sukses", "Top up succesfull")
+                topup_window.destroy()
+                # Refresh saldo tab (recreate tabview or saldo label)
+                self.tabview.destroy()
+                self.create_tabview()
+            else:
+                messagebox.showerror("Error", "Masukkan jumlah yang valid.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Masukkan jumlah yang valid.\n{e}")

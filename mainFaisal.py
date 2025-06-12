@@ -6,6 +6,7 @@ from user import User
 from chatwindow import ChatWindow
 from registerTutor import RegisterTutor
 from GUIuser import UserProfile
+from chat_history_list import ChatHistoryList
 # from register_user import StudentRegister
 
 class GUI(ctk.CTk):
@@ -63,7 +64,7 @@ class GUI(ctk.CTk):
 
         register_btn = ctk.CTkButton(
             sidebar, 
-            text="Daftar Tutor",
+            text="Jadi Tutor!",
             command=self.open_register_window,
             corner_radius=30,
             height=40,
@@ -76,14 +77,69 @@ class GUI(ctk.CTk):
             )
         register_btn.pack(pady=10, padx=30, fill="x")
 
-                # User profile section
+        # Chat History button
+        chat_history_btn = ctk.CTkButton(
+            sidebar, 
+            text="💬 Riwayat Chat",
+            command=self.open_chat_history,
+            corner_radius=30,
+            height=40,
+            font=("Helvetica", 20, "bold"),
+            text_color=color_pallete["text_clickable"],
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            border_color=color_pallete["clickable_border"],
+            border_width=1,
+            )
+        chat_history_btn.pack(pady=10, padx=30, fill="x")
+
+        # Top Tutors section
+        top_tutors_frame = ctk.CTkFrame(
+            sidebar,
+            corner_radius=20,
+            fg_color=color_pallete["highlight_bg"],
+            border_color=color_pallete["highlight_border"],
+            border_width=1,
+        )
+        top_tutors_frame.pack(side="top", fill="x", padx=16, pady=(16, 8))
+
+        # Top tutors title
+        top_tutors_title = ctk.CTkLabel(
+            top_tutors_frame,
+            text="Tutor Terbaik",
+            font=("Helvetica", 20, "bold"),
+            text_color=color_pallete["text_secondary"],
+        )
+        top_tutors_title.pack(pady=(15, 10))
+
+        # Dummy data for top 3 tutors
+        top_tutors = [
+            {"nama": "Ahmad Santoso", "rating": 4.9},
+            {"nama": "Siti Nurhaliza", "rating": 4.8},
+            {"nama": "Budi Prasetyo", "rating": 4.7}
+        ]
+
+        # Display top 3 tutors
+        for i, tutor in enumerate(top_tutors, 1):
+            tutor_label = ctk.CTkLabel(
+                top_tutors_frame,
+                text=f"{i}. {tutor['nama']}",
+                font=("Helvetica", 18),
+                text_color=color_pallete["text_secondary_teal"],
+                anchor="w"
+            )
+            tutor_label.pack(pady=7, padx=15, fill="x")
+
+        # Add some bottom padding
+        ctk.CTkLabel(top_tutors_frame, text="", height=10).pack()
+
+        # User profile section
         profile_frame = ctk.CTkFrame(
             sidebar,
             corner_radius=16,
             fg_color="transparent",
-            # border_width=1,
         )
-        profile_frame.pack(side="bottom", fill="x", padx=16, pady=16)
+        profile_frame.pack(side="bottom", fill="x", padx=16, pady=(0, 16))
 
         profile_label = ctk.CTkButton(
             profile_frame,
@@ -104,6 +160,10 @@ class GUI(ctk.CTk):
     def open_profile(self):
         UserProfile(self, self.user_instance)
 
+    def open_chat_history(self):
+        """Open chat history list window"""
+        ChatHistoryList(self)
+
     def main_area(self):
         # Main content container
         self.content_container = ctk.CTkFrame(self, corner_radius=15, fg_color="transparent")
@@ -122,15 +182,6 @@ class GUI(ctk.CTk):
         # Configure grid for search frame
         self.search_frame.grid_columnconfigure(1, weight=1)
         
-        # # Search label
-        # search_label = ctk.CTkLabel(
-        #     self.search_frame,
-        #     text="Cari:",
-        #     font=("Helvetica", 14, "bold"),
-        #     text_color="#333333"
-        # )
-        # search_label.grid(row=0, column=0, padx=(15, 10), pady=15, sticky="w")
-        
         # Search entry
         self.search_entry = ctk.CTkEntry(
             self.search_frame,
@@ -144,15 +195,6 @@ class GUI(ctk.CTk):
         )
         self.search_entry.grid(row=0, column=1, sticky="ew", padx=(20, 10), pady=15)
         self.search_entry.bind('<KeyRelease>', self.on_search_change)
-        
-        # # Filter label
-        # filter_label = ctk.CTkLabel(
-        #     self.search_frame,
-        #     text="Filter:",
-        #     font=("Helvetica", 14, "bold"),
-        #     text_color="#333333"
-        # )
-        # filter_label.grid(row=0, column=2, padx=(10, 10), pady=15, sticky="w")
         
         # Filter dropdown
         self.filter_var = ctk.StringVar(value="Filter")

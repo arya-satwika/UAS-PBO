@@ -1,9 +1,13 @@
 import customtkinter as ctk
-ctk.set_appearance_mode("dark")
 import os
 import json
 import random
 import datetime
+from theme import color_pallete
+
+# Set consistent appearance mode
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "tutor_responses.json")
@@ -12,7 +16,7 @@ try:
     responses = json.load(open(DATA_PATH))
 except FileNotFoundError:
     print("File not found")
-
+    responses = {"tutor_responses": ["Halo! Saya siap membantu Anda belajar. Silakan tanyakan apa saja! 😊"]}
 
 class ChatWindow(ctk.CTkToplevel):
     def __init__(self, master, tutor_data):
@@ -21,6 +25,7 @@ class ChatWindow(ctk.CTkToplevel):
         self.title(f"Chat dengan {tutor_data['nama']}")
         self.geometry("600x500")
         self.resizable(True, True)
+        self.configure(fg_color=color_pallete["background"])
         
         # Center the window
         self.center_window()
@@ -30,7 +35,13 @@ class ChatWindow(ctk.CTkToplevel):
         self.grid_rowconfigure(1, weight=1)
         
         # Header frame
-        self.header_frame = ctk.CTkFrame(self, corner_radius=15, fg_color="#1f6f8b")
+        self.header_frame = ctk.CTkFrame(
+            self, 
+            corner_radius=15, 
+            fg_color=color_pallete["sidebar_fill"],
+            border_color=color_pallete["sidebar_border"],
+            border_width=1
+        )
         self.header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
         self.header_frame.grid_columnconfigure(1, weight=1)
         
@@ -46,7 +57,7 @@ class ChatWindow(ctk.CTkToplevel):
             self.header_frame,
             text=f"{tutor_data['nama']}\n📚 {', '.join(tutor_data['mata-kuliah'])}",
             font=("Helvetica", 14, "bold"),
-            text_color="white",
+            text_color=color_pallete["text_primary"],
             anchor="w",
             justify="left"
         )
@@ -59,18 +70,33 @@ class ChatWindow(ctk.CTkToplevel):
             width=30,
             height=30,
             fg_color="transparent",
-            hover_color="#145374",
+            hover_color=color_pallete["clickable_border"],
+            text_color=color_pallete["text_clickable"],
             command=self.destroy
         )
         self.close_btn.grid(row=0, column=2, padx=(10, 15), pady=10)
         
         # Chat area (scrollable)
-        self.chat_frame = ctk.CTkScrollableFrame(self, corner_radius=15)
+        self.chat_frame = ctk.CTkScrollableFrame(
+            self, 
+            corner_radius=15,
+            fg_color=color_pallete["main_bg"],
+            border_color=color_pallete["main_border"],
+            border_width=1,
+            scrollbar_fg_color="transparent",
+            scrollbar_button_color=color_pallete["sidebar_border"]
+        )
         self.chat_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
         self.chat_frame.grid_columnconfigure(0, weight=1)
         
         # Message input frame
-        self.input_frame = ctk.CTkFrame(self, corner_radius=15)
+        self.input_frame = ctk.CTkFrame(
+            self, 
+            corner_radius=15,
+            fg_color=color_pallete["highlight_bg"],
+            border_color=color_pallete["highlight_border"],
+            border_width=1
+        )
         self.input_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(5, 10))
         self.input_frame.grid_columnconfigure(0, weight=1)
         
@@ -79,7 +105,10 @@ class ChatWindow(ctk.CTkToplevel):
             self.input_frame,
             placeholder_text="Ketik pesan Anda...",
             font=("Helvetica", 14),
-            height=40
+            height=40,
+            fg_color=color_pallete["entry_bg"],
+            border_color=color_pallete["entry_border"],
+            text_color=color_pallete["entry_text"]
         )
         self.message_entry.grid(row=0, column=0, sticky="ew", padx=(15, 10), pady=15)
         
@@ -89,8 +118,9 @@ class ChatWindow(ctk.CTkToplevel):
             text="📤 Kirim",
             width=80,
             height=40,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            text_color=color_pallete["text_clickable"],
             command=self.send_message
         )
         self.send_btn.grid(row=0, column=1, padx=(0, 15), pady=15)
@@ -141,7 +171,13 @@ class ChatWindow(ctk.CTkToplevel):
         msg_container.grid_columnconfigure(0, weight=1)
         
         # Message frame (aligned to right)
-        msg_frame = ctk.CTkFrame(msg_container, fg_color="#1f6f8b", corner_radius=15)
+        msg_frame = ctk.CTkFrame(
+            msg_container, 
+            fg_color=color_pallete["clickable_bg"], 
+            corner_radius=15,
+            border_color=color_pallete["clickable_border"],
+            border_width=1
+        )
         msg_frame.grid(row=0, column=1, sticky="e", padx=(50, 0))
         
         # Message text
@@ -149,7 +185,7 @@ class ChatWindow(ctk.CTkToplevel):
             msg_frame,
             text=message,
             font=("Helvetica", 12),
-            text_color="white",
+            text_color=color_pallete["text_clickable"],
             wraplength=300,
             justify="left"
         )
@@ -161,7 +197,7 @@ class ChatWindow(ctk.CTkToplevel):
             msg_container,
             text=timestamp,
             font=("Helvetica", 10),
-            text_color="#666666"
+            text_color=color_pallete["text_secondary"]
         )
         time_label.grid(row=1, column=1, sticky="e", padx=(0, 5))
         
@@ -184,7 +220,13 @@ class ChatWindow(ctk.CTkToplevel):
         avatar_label.grid(row=0, column=0, sticky="n", padx=(0, 10), pady=(5, 0))
         
         # Message frame (aligned to left)
-        msg_frame = ctk.CTkFrame(msg_container, fg_color="#f0f0f0", corner_radius=15)
+        msg_frame = ctk.CTkFrame(
+            msg_container, 
+            fg_color=color_pallete["card_bg"], 
+            corner_radius=15,
+            border_color=color_pallete["card_border"],
+            border_width=1
+        )
         msg_frame.grid(row=0, column=1, sticky="w", padx=(0, 50))
         
         # Message text
@@ -192,7 +234,7 @@ class ChatWindow(ctk.CTkToplevel):
             msg_frame,
             text=message,
             font=("Helvetica", 12),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             wraplength=300,
             justify="left"
         )
@@ -204,7 +246,7 @@ class ChatWindow(ctk.CTkToplevel):
             msg_container,
             text=timestamp,
             font=("Helvetica", 10),
-            text_color="#666666"
+            text_color=color_pallete["text_secondary"]
         )
         time_label.grid(row=1, column=1, sticky="w", padx=(5, 0))
         

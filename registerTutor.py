@@ -1,15 +1,21 @@
 import customtkinter as ctk
-ctk.set_appearance_mode("dark")
 from tkinter import messagebox
 from user import User
+from theme import color_pallete
+
+# Set consistent appearance mode
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
 class RegisterTutor(ctk.CTkToplevel):
-    def __init__(self, master,user):
+    def __init__(self, master, user):
         super().__init__(master)
         self.title("Daftar Pengajar")
         self.geometry("600x700")
         self.resizable(False, False)
         self.current_user = user
+        self.configure(fg_color=color_pallete["background"])
+        
         # Center the window
         self.center_window()
         
@@ -20,8 +26,15 @@ class RegisterTutor(ctk.CTkToplevel):
             messagebox.showinfo("Info", "Anda sudah terdaftar sebagai pengajar.")
             self.destroy()
             return
+            
         # Main container
-        self.main_container = ctk.CTkFrame(self, corner_radius=20, fg_color="#ffffff", border_width=2, border_color="#d1d1d1")
+        self.main_container = ctk.CTkFrame(
+            self, 
+            corner_radius=20, 
+            fg_color=color_pallete["card_bg"], 
+            border_width=2, 
+            border_color=color_pallete["card_border"]
+        )
         self.main_container.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
         self.main_container.grid_columnconfigure(0, weight=1)
         
@@ -30,7 +43,7 @@ class RegisterTutor(ctk.CTkToplevel):
             self.main_container, 
             text="👨‍🏫 Daftar Pengajar", 
             font=("Helvetica", 24, "bold"),
-            text_color="#1f6f8b"
+            text_color=color_pallete["text_primary"]
         )
         self.title_label.grid(row=0, column=0, pady=(20, 30))
         
@@ -43,11 +56,10 @@ class RegisterTutor(ctk.CTkToplevel):
             self.name_frame, 
             text=f"👤 {self.current_user.username} Mendaftar sebagai pengajar!", 
             font=("Helvetica", 20, "bold"),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             anchor="w"
         )
         self.name_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
-        
         
         # Harga field
         self.harga_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
@@ -56,9 +68,9 @@ class RegisterTutor(ctk.CTkToplevel):
         
         self.harga_label = ctk.CTkLabel(
             self.harga_frame, 
-            text="📚 Harga  :", 
+            text="💰 Harga :", 
             font=("Helvetica", 14, "bold"),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             anchor="w"
         )
         self.harga_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -70,7 +82,9 @@ class RegisterTutor(ctk.CTkToplevel):
             height=40,
             corner_radius=10,
             border_width=2,
-            border_color="#d1d1d1"
+            border_color=color_pallete["entry_border"],
+            fg_color=color_pallete["entry_bg"],
+            text_color=color_pallete["entry_text"]
         )
         self.harga_entry.grid(row=1, column=0, sticky="ew")
 
@@ -83,7 +97,7 @@ class RegisterTutor(ctk.CTkToplevel):
             self.matkul_frame, 
             text="📚 Mata Kuliah:", 
             font=("Helvetica", 14, "bold"),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             anchor="w"
         )
         self.matkul_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -95,10 +109,11 @@ class RegisterTutor(ctk.CTkToplevel):
             height=40,
             corner_radius=10,
             border_width=2,
-            border_color="#d1d1d1"
+            border_color=color_pallete["entry_border"],
+            fg_color=color_pallete["entry_bg"],
+            text_color=color_pallete["entry_text"]
         )
         self.matkul_entry.grid(row=1, column=0, sticky="ew")
-
 
         # Waktu Belajar field
         self.waktu_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
@@ -109,7 +124,7 @@ class RegisterTutor(ctk.CTkToplevel):
             self.waktu_frame, 
             text="⏰ Waktu Belajar:", 
             font=("Helvetica", 14, "bold"),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             anchor="w"
         )
         self.waktu_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -121,7 +136,9 @@ class RegisterTutor(ctk.CTkToplevel):
             height=40,
             corner_radius=10,
             border_width=2,
-            border_color="#d1d1d1"
+            border_color=color_pallete["entry_border"],
+            fg_color=color_pallete["entry_bg"],
+            text_color=color_pallete["entry_text"]
         )
         self.waktu_entry.grid(row=1, column=0, sticky="ew")
         
@@ -134,7 +151,7 @@ class RegisterTutor(ctk.CTkToplevel):
             self.tempat_frame, 
             text="📍 Tempat Belajar:", 
             font=("Helvetica", 14, "bold"),
-            text_color="#333333",
+            text_color=color_pallete["text_primary"],
             anchor="w"
         )
         self.tempat_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -146,7 +163,9 @@ class RegisterTutor(ctk.CTkToplevel):
             height=40,
             corner_radius=10,
             border_width=2,
-            border_color="#d1d1d1"
+            border_color=color_pallete["entry_border"],
+            fg_color=color_pallete["entry_bg"],
+            text_color=color_pallete["entry_text"]
         )
         self.tempat_entry.grid(row=1, column=0, sticky="ew")
         
@@ -162,8 +181,9 @@ class RegisterTutor(ctk.CTkToplevel):
             font=("Helvetica", 16, "bold"),
             height=45,
             corner_radius=15,
-            fg_color="#1f6f8b",
-            hover_color="#145374",
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            text_color=color_pallete["text_clickable"],
             command=self.register_tutor
         )
         self.register_button.grid(row=0, column=0, sticky="ew", padx=(0, 10))
@@ -175,14 +195,12 @@ class RegisterTutor(ctk.CTkToplevel):
             font=("Helvetica", 16, "bold"),
             height=45,
             corner_radius=15,
-            fg_color="#dc3545",
+            fg_color=color_pallete["error"],
             hover_color="#c82333",
+            text_color=color_pallete["text_clickable"],
             command=self.destroy
         )
         self.cancel_button.grid(row=0, column=1, sticky="ew", padx=(10, 0))
-        
-        # # Focus on name entry
-        # self.name_entry.focus()
         
         # Bind Enter key to register
         self.bind('<Return>', lambda event: self.register_tutor())
@@ -197,7 +215,7 @@ class RegisterTutor(ctk.CTkToplevel):
         self.geometry(f"{width}x{height}+{x}+{y}")
 
     def register_tutor(self):
-        if self.current_user.register_tutor(self.entry_harga.get(), self.matkul_entry.get(), self.waktu_entry.get(), self.tempat_entry.get()):
+        if self.current_user.register_tutor(self.harga_entry.get(), self.matkul_entry.get(), self.waktu_entry.get(), self.tempat_entry.get()):
             self.current_user.role = "pengajar"
             self.current_user.updateJson()
             messagebox.showinfo("Sukses", f"Pengajar {self.current_user.username} berhasil didaftarkan!")

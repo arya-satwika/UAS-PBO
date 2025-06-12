@@ -4,6 +4,7 @@ from theme import color_pallete
 from user import User
 from chatwindow import ChatWindow
 from registerTutor import RegisterTutor
+from GUIuser import UserProfile
 
 class GUI(ctk.CTk):
     def __init__(self, user):
@@ -64,6 +65,31 @@ class GUI(ctk.CTk):
             )
         register_btn.pack(pady=10, padx=20, fill="x")
 
+                # User profile section
+        profile_frame = ctk.CTkFrame(
+            sidebar,
+            corner_radius=16,
+            fg_color="transparent",
+            # border_width=1,
+        )
+        profile_frame.pack(side="bottom", fill="x", padx=16, pady=16)
+
+        profile_label = ctk.CTkButton(
+            profile_frame,
+            text=f"👤 {self.user_instance.username}",
+            font=("Segoe UI", 16, "bold"),
+            text_color=color_pallete["text_primary"],
+            fg_color=color_pallete["clickable_bg"],
+            hover_color=color_pallete["clickable_border"],
+            border_color=color_pallete["clickable_border"],
+            border_width=1,
+            corner_radius=20,
+            command=lambda: self.open_profile()
+        )
+        profile_label.pack(pady=16)
+
+    def open_profile(self):
+        UserProfile(self, self.user_instance)
 
     def main_area(self):
         # Main content container

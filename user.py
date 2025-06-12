@@ -28,7 +28,11 @@ class User:
     def getUserByUsername(self, username):
         for user in users_list:
             if user.get("username") == username:
-                return user
+                self.username = user.get("username")
+                self.password = user.get("password")
+                self.role = user.get("role")
+                self.saldo = user.get("saldo", {})
+                
         return None
     def filterByMatkul(self, matkul):
         return [tutor for tutor in self.loadAllTutors() if matkul in tutor.get("mata-kuliah", [])]
@@ -71,4 +75,10 @@ class User:
                     self.saldo -= tutor.get("harga", 0)
                     self.updateJson()
                     return True
+        return False
+    def topup_saldo(self, amount):
+        if amount > 0:
+            self.saldo += amount
+            self.updateJson()
+            return True
         return False

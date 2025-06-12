@@ -1,10 +1,12 @@
 import customtkinter as ctk
+import tkinter.messagebox as mb
 # ctk.set_appearance_mode("dark")
 from theme import color_pallete
 from user import User
 from chatwindow import ChatWindow
 from registerTutor import RegisterTutor
 from GUIuser import UserProfile
+# from register_user import StudentRegister
 
 class GUI(ctk.CTk):
     def __init__(self, user):
@@ -12,9 +14,10 @@ class GUI(ctk.CTk):
         super().__init__()
         self.title("Tutor Cerdas")
         self.geometry("1100x700")
-        ctk.set_default_color_theme("blue")
+        ctk.set_default_color_theme("blue") 
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
+        self.center_window()
         # Initialize user instance and current filter
         self.user_instance = User()
         self.user_instance.getUserByUsername("user3")
@@ -30,7 +33,15 @@ class GUI(ctk.CTk):
         self.sidebar()
         self.main_area()
         self.refresh_tutors()
-
+    def center_window(self):
+        """Center the window on screen"""
+        self.update_idletasks()
+        width = self.winfo_width()
+        height = self.winfo_height()
+        x = (self.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.winfo_screenheight() // 2) - (height // 2)
+        self.geometry(f"{width}x{height}+{x}+{y}")
+    
     def sidebar(self):
         sidebar = ctk.CTkFrame(
             self,
@@ -40,7 +51,7 @@ class GUI(ctk.CTk):
             border_color=color_pallete["sidebar_border"],
             border_width=1,
             )
-        sidebar.pack(side="left", fill="y", padx=20, pady=20)
+        sidebar.pack(side="left", fill="y", padx=(20,5), pady=20)
 
         title = ctk.CTkLabel(
             sidebar, 
@@ -52,10 +63,10 @@ class GUI(ctk.CTk):
 
         register_btn = ctk.CTkButton(
             sidebar, 
-            text="Daftarkan Tutor",
+            text="Daftar Tutor",
             command=self.open_register_window,
             corner_radius=30,
-            height=50,
+            height=40,
             font=("Helvetica", 20, "bold"),
             text_color=color_pallete["text_clickable"],
             fg_color=color_pallete["clickable_bg"],
@@ -63,7 +74,7 @@ class GUI(ctk.CTk):
             border_color=color_pallete["clickable_border"],
             border_width=1,
             )
-        register_btn.pack(pady=10, padx=20, fill="x")
+        register_btn.pack(pady=10, padx=30, fill="x")
 
                 # User profile section
         profile_frame = ctk.CTkFrame(
@@ -83,10 +94,12 @@ class GUI(ctk.CTk):
             hover_color=color_pallete["clickable_border"],
             border_color=color_pallete["clickable_border"],
             border_width=1,
-            corner_radius=20,
+            corner_radius=25,
+            height=50,
+            width=250,
             command=lambda: self.open_profile()
         )
-        profile_label.pack(pady=16)
+        profile_label.pack(pady=5)
 
     def open_profile(self):
         UserProfile(self, self.user_instance)
@@ -177,6 +190,7 @@ class GUI(ctk.CTk):
         self.status_label.pack(anchor="w", padx=20, pady=(0, 5))
         
         # Tutors display area (scrollable)
+        
         self.main_frame = ctk.CTkScrollableFrame(
             self.content_container,
             corner_radius=25,
@@ -188,7 +202,6 @@ class GUI(ctk.CTk):
             scrollbar_button_hover_color=color_pallete["sidebar_border"],
         )
         self.main_frame.pack(expand=True, fill="both", padx=(5,15), pady=(0, 15))
-
     def on_search_change(self, event=None):
         """Handle search as user types"""
         search_term = self.search_entry.get().strip().lower()
@@ -320,24 +333,13 @@ class GUI(ctk.CTk):
 
     
     def popup_bayar(self, tutor):
-        self.bayar_window = ctk.CTkToplevel(self)
-        self.bayar_window.title("Bayar Tutor")
-        self.bayar_window.geometry("400x300")
-
-        self.label_judul = ctk.CTkLabel(self.bayar_window, text="Konfirmasi Pembayaran")
-        self.label_judul.pack(pady=10)
-
-        self.label_info = ctk.CTkLabel(self.bayar_window, text=f"Anda akan membayar {tutor['harga']} ke {tutor['nama']}")
-        self.label_info.pack(pady=10)
-        self.buttonFrame = ctk.CTkFrame(self.bayar_window, fg_color="transparent")
-        self.buttonFrame.pack(pady=20)
-        self.button_batal = ctk.CTkButton(self.buttonFrame, text="Batal", command=self.bayar_window.destroy)
-        self.button_batal.pack(side="left", padx=5)
-        self.button_bayar = ctk.CTkButton(self.buttonFrame, text="Bayar", command=lambda: self.handle_bayar(tutor))
-        self.button_bayar.pack(side="right", padx=5)
-    def handle_bayar(self, tutor):
-        self.user_instance.transfer_ke_tutor(tutor)
-        self.open_chat(tutor)
+        result = mb.askyesno(
+            "Konfirmasi Pembayaran",
+            f"Anda akan membayar {tutor['harga']} ke {tutor['nama']}\nLanjutkan pembayaran?"
+        )
+        if result:
+            self.user_instance.transfer_ke_tutor(tutor)
+            self.open_chat(tutor)
     def tutor_card(self, tutor):
         card = ctk.CTkFrame(
             self.main_frame,
@@ -363,20 +365,36 @@ class GUI(ctk.CTk):
             wraplength=550,
             justify="left",
             font=("Helvetica", 20),
-        )
+        )   
         matkul_label.pack(anchor="w", padx=20)
 
+        action_frame = ctk.CTkFrame(card, fg_color="transparent")
+        action_frame.pack(side="bottom", padx=5, pady=(0, 10), fill="x")
+
         detail_label = ctk.CTkLabel(
-            card,
-            text=f"⏰ {tutor['waktu-belajar']}   📍 {tutor['tempat-belajar']}",
+            action_frame,
+            text=f"⏰ {tutor['waktu-belajar']}\n📍 {tutor['tempat-belajar']}",
             text_color=color_pallete["text_secondary"],
             font=("Segoe UI", 15),
         )
-        detail_label.pack(anchor="w", padx=20, pady=20)
+        detail_label.pack(anchor="w", padx=15, pady=20)
 
-        action_frame = ctk.CTkFrame(card, fg_color="transparent")
-        action_frame.pack(anchor="e", padx=20, pady=(0, 10))
-
+        harga_frame = ctk.CTkFrame(
+            action_frame,
+            width=200,
+            height=20,
+            fg_color="transparent"
+        )
+        harga_frame.pack(padx=10, anchor="e")
+        harga_formatted = f"{tutor['harga']:,}".replace(",", ".")
+        harga_frame.propagate(False)  # Prevent frame from resizing to fit content
+        harga_label = ctk.CTkLabel(
+            harga_frame,
+            text=f"Rp. {harga_formatted}",
+            text_color=color_pallete["text_secondary"],
+            font=("Segoe UI", 14),
+        )
+        harga_label.pack(anchor="center")
         chat_button = ctk.CTkButton(
             action_frame,
             text="💬 Chat",
@@ -389,9 +407,9 @@ class GUI(ctk.CTk):
             corner_radius=30,
             height=50,
             width=200,
-            command=lambda: self.popup_bayar(tutor)
+            command=lambda:self.popup_bayar(tutor)
         )
-        chat_button.pack(padx=10,pady=10, side="right")
+        chat_button.pack(padx=10,pady=(5,10), side="right")
         chat_button.propagate(False)
 
     def run(self):

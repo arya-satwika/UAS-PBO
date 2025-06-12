@@ -17,25 +17,36 @@ class User:
         self.password = ""
         self.role = ""
         self.saldo = 0
-    def addUser(self, user_data):
+        self.prodi = ""
+        self.angkatan = ""
+    def addUserToJson(self, user_data):
         if "users" not in data:
             data["users"] = []
+        for users in users_list:
+            if users.get("username") == user_data.get("username"):
+                return False
+        
         data["users"].append(user_data)
         with open(DATA_PATH, 'w') as f:
             json.dump(data, f, indent=4)
+        return True
     def loadAllTutors(self):
         return data.get("tutor", [])
+    
     def getUserByUsername(self, username):
         for user in users_list:
             if user.get("username") == username:
                 self.username = user.get("username")
                 self.password = user.get("password")
                 self.role = user.get("role")
-                self.saldo = user.get("saldo", {})
-                
+                self.saldo = int(user.get("saldo", 0))
+                self.prodi = user.get("prodi", "")
+                self.angkatan = user.get("angkatan", "")
+
         return None
     def filterByMatkul(self, matkul):
         return [tutor for tutor in self.loadAllTutors() if matkul in tutor.get("mata-kuliah", [])]
+    
     def authUser(self, username, password):
         for user in users_list:
             if user.get("username") == username and users_list.get("password") == password:
@@ -45,15 +56,19 @@ class User:
                 self.role = user.get("role")
                 return True
         return False
+    
     def updateJson(self):
         for user in data.get("users", []):
             if user.get("username") == self.username:
                 user["password"] = self.password
                 user["role"] = self.role
                 user["saldo"] = self.saldo
+                user["prodi"] = self.prodi
+                user["angkatan"] = self.angkatan
                 break
         with open(DATA_PATH, 'w') as f:
             json.dump(data, f, indent=4)
+    
     def register_tutor(self, harga, matkul, waktu_belajar, tempat_belajar):
         data["tutor"].append({
             "nama": self.username,
@@ -74,11 +89,10 @@ class User:
                             break
                     self.saldo -= tutor.get("harga", 0)
                     self.updateJson()
-                    return True
-        return False
+    
     def topup_saldo(self, amount):
         if amount > 0:
             self.saldo += amount
             self.updateJson()
             return True
-        return False
+        return False    

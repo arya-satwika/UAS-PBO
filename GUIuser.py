@@ -1,7 +1,5 @@
 import customtkinter as ctk
 from tkinter import messagebox
-import json
-import os
 from theme import color_pallete
 from user import User
 
@@ -10,15 +8,16 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
 class UserProfile(ctk.CTkToplevel):
-    def __init__(self,user=None):
-        super().__init__()
+    def __init__(self, master, user):
+        super().__init__(master)
         
         # Configure window
         self.title("User Profile - TutorCerdas")
         self.geometry("800x600")
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
-        
+        self.grab_set()  
+        self.focus_set()
         # Sample user data - in real app, this would come from a database
         self.user_data = user
         self.setup_ui()
@@ -59,7 +58,7 @@ class UserProfile(ctk.CTkToplevel):
         
         profile_label = ctk.CTkLabel(
             profile_frame, 
-            text=self.user_data["nama"][:2].upper(),
+            text=self.user_data.username[:2].upper(),
             font=ctk.CTkFont(size=24, weight="bold"),
             text_color=color_pallete["text_primary"]
         )
@@ -70,8 +69,8 @@ class UserProfile(ctk.CTkToplevel):
         info_frame.grid(row=0, column=1, sticky="w", padx=20, pady=10)
         
         name_label = ctk.CTkLabel(
-            info_frame, 
-            text=self.user_data["nama"],
+            info_frame,
+            text=self.user_data.username,
             font=ctk.CTkFont(size=20, weight="bold"),
             text_color=color_pallete["text_primary"]
         )
@@ -79,7 +78,7 @@ class UserProfile(ctk.CTkToplevel):
         
         details_label = ctk.CTkLabel(
             info_frame,
-            text=f"{self.user_data['prodi']} • Angkatan {self.user_data['angkatan']}",
+            text=f"{self.user_data.prodi} • Angkatan {self.user_data.angkatan}",
             font=ctk.CTkFont(size=14),
             text_color=color_pallete["text_secondary"]
         )
@@ -139,17 +138,14 @@ class UserProfile(ctk.CTkToplevel):
         grid_frame.grid_columnconfigure((0, 1), weight=1)
         
         # Name
-        self.create_info_item(grid_frame, "Nama Lengkap", self.user_data["nama"], 0, 0)
-        
-        # Email
-        self.create_info_item(grid_frame, "Email", self.user_data["email"], 0, 1)
+        self.create_info_item(grid_frame, "Nama Lengkap", self.user_data.username, 0, 0)
         
         # Program Studi
-        self.create_info_item(grid_frame, "Program Studi", self.user_data["prodi"], 1, 0)
-        
+        self.create_info_item(grid_frame, "Program Studi", self.user_data.prodi, 1, 0)
+
         # Angkatan
-        self.create_info_item(grid_frame, "Angkatan", self.user_data["angkatan"], 1, 1)
-        
+        self.create_info_item(grid_frame, "Angkatan", self.user_data.angkatan, 1, 1)
+
         # Edit button
         edit_btn = ctk.CTkButton(
             info_frame,
@@ -211,7 +207,7 @@ class UserProfile(ctk.CTkToplevel):
         
         saldo_amount = ctk.CTkLabel(
             saldo_frame,
-            text=f"Rp {self.user_data['saldo']:,}",
+            text=f"Rp {self.user_data.saldo:,}",
             font=ctk.CTkFont(size=24, weight="bold"),
             text_color=color_pallete["text_primary"]
         )
@@ -260,11 +256,11 @@ class UserProfile(ctk.CTkToplevel):
         info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         info_frame.pack(fill="x", padx=20)
         info_frame.grid_columnconfigure((0, 1), weight=1)
-        
-        self.create_info_item(info_frame, "Program Studi", self.user_data["prodi"], 0, 0)
-        self.create_info_item(info_frame, "Fakultas", self.user_data["fakultas"], 0, 1)
-        
-    
+
+        self.create_info_item(info_frame, "Program Studi", self.user_data.prodi, 0, 0)
+        # self.create_info_item(info_frame, "Fakultas", self.user_data.fakultas, 0, 1)
+
+
     # Event handlers
     def edit_profile(self):
         messagebox.showinfo("Edit Profil", "Fitur edit profil akan segera tersedia!")
@@ -319,7 +315,3 @@ class UserProfile(ctk.CTkToplevel):
             corner_radius=20
         )
         topup_btn.pack(pady=20)
-
-if __name__ == "__main__":
-    app = UserProfile()
-    app.mainloop()

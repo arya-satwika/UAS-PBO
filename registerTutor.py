@@ -15,7 +15,8 @@ class RegisterTutor(ctk.CTkToplevel):
         self.resizable(False, False)
         self.current_user = user
         self.configure(fg_color=color_pallete["background"])
-        
+        self.grab_set()  # Make this window modal
+        self.focus_set()
         # Center the window
         self.center_window()
         

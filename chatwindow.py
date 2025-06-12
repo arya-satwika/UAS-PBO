@@ -26,7 +26,8 @@ class ChatWindow(ctk.CTkToplevel):
         self.geometry("600x500")
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
-        
+        self.grab_set()  # Make this window modal
+        self.focus_set()
         # Center the window
         self.center_window()
         
@@ -37,31 +38,31 @@ class ChatWindow(ctk.CTkToplevel):
         # Header frame
         self.header_frame = ctk.CTkFrame(
             self, 
-            corner_radius=15, 
-            fg_color=color_pallete["sidebar_fill"],
-            border_color=color_pallete["sidebar_border"],
+            corner_radius=25, 
+            fg_color=color_pallete["card_bg"],
+            border_color=color_pallete["card_border"],
             border_width=1
         )
         self.header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
         self.header_frame.grid_columnconfigure(1, weight=1)
         
-        # Tutor info in header
-        self.tutor_avatar = ctk.CTkLabel(
-            self.header_frame,
-            text="👨‍🏫",
-            font=("Helvetica", 24)
-        )
-        self.tutor_avatar.grid(row=0, column=0, padx=(15, 10), pady=10)
-        
+        # # Tutor info in header
+        # self.tutor_avatar = ctk.CTkLabel(
+        #     self.header_frame,
+        #     text="👨‍🏫",
+        #     font=("Segoe UI", 24)
+        # )
+        # self.tutor_avatar.grid(row=0, column=0, padx=(15, 10), pady=10)
+                
         self.tutor_info = ctk.CTkLabel(
             self.header_frame,
-            text=f"{tutor_data['nama']}\n📚 {', '.join(tutor_data['mata-kuliah'])}",
-            font=("Helvetica", 14, "bold"),
+            text=f"{tutor_data['nama']}",
+            font=("Helvetica", 20, "bold"),
             text_color=color_pallete["text_primary"],
             anchor="w",
             justify="left"
         )
-        self.tutor_info.grid(row=0, column=1, sticky="w", pady=10)
+        self.tutor_info.grid(row=0, column=1, sticky="w", pady=10, padx=(30, 0))
         
         # Close button
         self.close_btn = ctk.CTkButton(
@@ -92,10 +93,11 @@ class ChatWindow(ctk.CTkToplevel):
         # Message input frame
         self.input_frame = ctk.CTkFrame(
             self, 
-            corner_radius=15,
+            corner_radius=20,
             fg_color=color_pallete["highlight_bg"],
             border_color=color_pallete["highlight_border"],
             border_width=1
+            
         )
         self.input_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(5, 10))
         self.input_frame.grid_columnconfigure(0, weight=1)
@@ -115,12 +117,14 @@ class ChatWindow(ctk.CTkToplevel):
         # Send button
         self.send_btn = ctk.CTkButton(
             self.input_frame,
-            text="📤 Kirim",
+            text="Kirim",
             width=80,
             height=40,
-            fg_color=color_pallete["clickable_bg"],
+            fg_color=color_pallete["clickable_border"],
             hover_color=color_pallete["clickable_border"],
             text_color=color_pallete["text_clickable"],
+            corner_radius=20,
+            font=("Helvetica", 14, "bold"),
             command=self.send_message
         )
         self.send_btn.grid(row=0, column=1, padx=(0, 15), pady=15)
@@ -211,13 +215,6 @@ class ChatWindow(ctk.CTkToplevel):
         msg_container.grid(sticky="ew", padx=5, pady=2)
         msg_container.grid_columnconfigure(1, weight=1)
         
-        # Avatar
-        avatar_label = ctk.CTkLabel(
-            msg_container,
-            text="👨‍🏫",
-            font=("Helvetica", 16)
-        )
-        avatar_label.grid(row=0, column=0, sticky="n", padx=(0, 10), pady=(5, 0))
         
         # Message frame (aligned to left)
         msg_frame = ctk.CTkFrame(

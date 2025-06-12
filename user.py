@@ -16,7 +16,7 @@ class User:
         self.username = ""
         self.password = ""
         self.role = ""
-        self.saldo = {}
+        self.saldo = 0
     def addUser(self, user_data):
         if "users" not in data:
             data["users"] = []
@@ -25,11 +25,11 @@ class User:
             json.dump(data, f, indent=4)
     def loadAllTutors(self):
         return data.get("tutor", [])
-    # def getUserByUsername(self, username):
-    #     for user in self.users_list:
-    #         if user.get("username") == username:
-    #             return user
-    #     return None
+    def getUserByUsername(self, username):
+        for user in users_list:
+            if user.get("username") == username:
+                return user
+        return None
     def filterByMatkul(self, matkul):
         return [tutor for tutor in self.loadAllTutors() if matkul in tutor.get("mata-kuliah", [])]
     def authUser(self, username, password):
@@ -60,3 +60,15 @@ class User:
             "mata-kuliah": [matkul],
             "harga": harga
         })
+    def transfer_ke_tutor(self, tutor):
+        if self.saldo >= tutor.get("harga", 0):
+            for t in tutors_list:
+                if t.get("nama") == tutor.get("nama"):
+                    for user in users_list:
+                        if user.get("username") == tutor.get("nama"):
+                            user["saldo"] = user.get("saldo", 0) + tutor.get("harga", 0)
+                            break
+                    self.saldo -= tutor.get("harga", 0)
+                    self.updateJson()
+                    return True
+        return False

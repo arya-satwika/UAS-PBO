@@ -86,13 +86,7 @@
             "angkatan": "2022",
             "prodi": "dqwdqwdqd",
             "saldo": 100000,
-            "role": "user"
-        },
-        {
-            "username": "user2",
-            "password": "uasdasdwq",
-            "angkatan": "2021",
-            "prodi": "adwdwd"
+            "role": "student"
         },
         {
             "username": "Astuti",
@@ -146,6 +140,30 @@
             "username": "Ezra Migguelle",
             "password": "kimochi",
             "angkatan": "2024",
+            "prodi": "Teknik Informatika",
+            "saldo": 0,
+            "role": "student"
+        },
+        {
+            "username": "Arya",
+            "password": "aryaadaa",
+            "angkatan": "2021",
+            "prodi": "Teknik Informatika",
+            "saldo": 0,
+            "role": "student"
+        },
+        {
+            "username": "KOKOKAA",
+            "password": "12345678",
+            "angkatan": "2022",
+            "prodi": "Teknik Informatika",
+            "saldo": 0,
+            "role": "student"
+        },
+        {
+            "username": "KOKOAAAAASDASD",
+            "password": "90909090909",
+            "angkatan": "2022",
             "prodi": "Teknik Informatika",
             "saldo": 0,
             "role": "student"

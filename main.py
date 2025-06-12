@@ -5,10 +5,22 @@ from tkinter import messagebox
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data.json")
+PAYMENT_PATH = os.path.join(BASE_DIR, "payment.json") 
 users = json.load(open(DATA_PATH))
 
+def save_payment(data):
+    try:
+        with open(PAYMENT_PATH, "r") as f:
+            payment = json.load(f)
+    except FileNotFoundError:
+        payment = []
+
+    payment.append(data)
+    with open(PAYMENT_PATH, "w") as f:
+        json.dump(payment, f, indent=4)
+
 class User:
-    def __init__(self):
+    def _init_(self):
         self.tutors=self.loadAllTutors()
     def loadAllTutors(self):
         user_list = users.get("tutor", [])
@@ -24,8 +36,8 @@ class User:
             print(list(user.values()))
 
 class RegisterTutor(ctk.CTk):
-    def __init__(self, master):
-        super().__init__()
+    def _init_(self, master):
+        super()._init_()
         self.master = master
         master.title("TutorCerdas")
 
@@ -64,51 +76,23 @@ class RegisterTutor(ctk.CTk):
         self.entry_email.delete(0, ctk.END)
         self.entry_matkul.delete(0, ctk.END)
 
-
-    
-
 class GUI(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+    def _init_(self):
+        super()._init_()
         self.title("Tutor App")
         self.geometry("900x500")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)  # Tambahkan agar mainFrame bisa membesar
-
-        self.mainFrame = ctk.CTkFrame(
-            master=self, 
-            width=700, 
-            height=500,
-            fg_color="#771818",
-            bg_color="#771818",
-            corner_radius=20,
-        )
-        self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,20), sticky="nsew",rowspan=2)
-        self.mainFrame.grid_rowconfigure(1, weight=1)  # Tambahkan agar tutorFrame bisa membesar
-        self.mainFrame.grid_columnconfigure(0, weight=1)
-
-        self.sidebarFrame = ctk.CTkFrame(
-            master=self, 
-            width=300, 
-            height=500,
-            fg_color="#2dbe10",
-            bg_color="#771818",
-            corner_radius=20,
-        )
-        self.sidebarFrame.grid(row=0,column=0,pady=20, padx=(20,5), sticky="nsew",rowspan=2)
-        # self.sidebarFrame.grid_rowconfigure(0, weight=1)
-        # self.sidebarFrame.grid_rowconfigure(1, weight=0)
-        self.tutorFrame = ctk.CTkScrollableFrame(
-            master=self.mainFrame,
+        self.mainFrame = ctk.CTkScrollableFrame(
+            master=self,
             fg_color="#ba2525",
             width=700,
             height=500,
             )
-        self.tutorFrame.grid(row=1,column=0,pady=20, padx=(5,0), sticky="nsew")
-        self.tutorFrame.grid_columnconfigure(0, weight=1)  # Agar konten di dalam scrollable frame bisa membesar
-
-        # ...existing code...
+        self.mainFrame.grid(row=0,column=1,pady=20, padx=(5,0), sticky="nsew")
+        self.mainFrame.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=0)
 
         self.tutors = User().loadAllTutors()
         # ctk.set_widget_scaling(1.)
@@ -119,14 +103,14 @@ class GUI(ctk.CTk):
         for tutor in self.tutors:
             self.tutorCard(tutor)
     def sidebar(self):
-        titleLabel= ctk.CTkLabel(
-            master=self.sidebarFrame,
-            text="Tutor App",
-            font=("Roboto Mono", 20, "bold"),
+        sidebarFrame = ctk.CTkFrame(
+            master=self, 
+            width=200, 
+            height=500,
             fg_color="#2dbe10",
             bg_color="#771818",
         )
-        titleLabel.grid(row=0,column=0,pady=20, padx=20)
+        sidebarFrame.grid(row=0,column=0,pady=20, padx=20)
         buttonFrame = ctk.CTkFrame(
             master=self.sidebarFrame, 
             width=200, 
@@ -279,16 +263,15 @@ class GUI(ctk.CTk):
 
     def tutorCard(self, tutor):
         card = ctk.CTkFrame(
-            master=self.tutorFrame, 
-            width=400,  
-            height=150,
+            master=self.mainFrame, 
+            width=700,  
+            height=250,
             fg_color="#029b26",
             corner_radius=40,
         )
-        card.pack(pady=10, padx=10, side="top", anchor="s",)
-        card.grid_columnconfigure(0, weight=0)
+        card.pack(pady=10, padx=10, side="top", anchor="n", fill="x")
+        card.grid_columnconfigure(0, weight=1)
         card.grid_columnconfigure(1, weight=0)
-        card.grid_propagate(False)
         namaTutor = ctk.CTkLabel(
             master=card, 
             text=f"{tutor['nama']}", 
@@ -353,7 +336,7 @@ class GUI(ctk.CTk):
             fg_color="#4C74AF",
             corner_radius=20,
         )
-        buttonFrame.grid(row=0,column=1,pady=10, padx=10, rowspan=3,sticky="ew")
+        buttonFrame.grid(row=3,column=1,pady=10, padx=10, sticky="ew")
         button_chat = ctk.CTkButton(
             master=buttonFrame, 
             text="Chat", 
@@ -367,10 +350,67 @@ class GUI(ctk.CTk):
             bg_color="#4C74AF",
         )
         button_chat.grid(row=0,column=3,pady=10, padx=0, sticky="w")
+
+        button_bayar = ctk.CTkButton(
+            master=buttonFrame,
+            text="Bayar",
+            font=("Arial", 16),
+            command=lambda: self.make_payment(tutor),
+            corner_radius=20,
+            height=40,
+            width=100,
+            fg_color="#e67e22",
+            hover_color="#d35400",
+            bg_color="#4C74AF",
+        )
+        button_bayar.grid(row=0,column=4,pady=10, padx=(10,0), sticky="e")
+    
+    def make_payment(self, tutor):
+        payment_window = ctk.CTkToplevel(self)
+        payment_window.title("Form Pembayaran")
+        payment_window.geometry("400x250")
+
+        label_info = ctk.CTkLabel(
+            master=payment_window,
+            text=f"Pembayaran untuk: {tutor['nama']}",
+            font=("Arial", 18)
+        )
+        label_info.pack(pady=15)
+
+        entry_nominal = ctk.CTkEntry(
+            master=payment_window,
+            placeholder_text="Masukkan nominal pembayaran (Rp)",
+            font=("Arial", 14)
+        )
+        entry_nominal.pack(pady=10)
+
+        def submit_payment():
+            nominal = entry_nominal.get()
+            if not nominal.isdigit():
+                messagebox.showerror("Error", "Nominal harus berupa angka.")
+                return
+            data = {
+                "tutor": tutor["nama"],
+                "email": tutor["email"],
+                "amount": int(nominal)
+            }
+            save_payment(data)
+            messagebox.showinfo("Sukses", f"Pembayaran Rp{nominal} berhasil disimpan!")
+            payment_window.destroy()
+
+        submit_btn = ctk.CTkButton(
+            master=payment_window,
+            text="Bayar",
+            fg_color="green",
+            hover_color="#157a18",
+            command=submit_payment
+        )
+        submit_btn.pack(pady=15)
+
     def run(self):
         self.mainloop()
     
-if __name__ == "__main__":
+if __name__ == "_main_":
     user = User()
     # register=RegisterTutor()
     gui = GUI()

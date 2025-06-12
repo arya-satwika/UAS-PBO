@@ -41,16 +41,6 @@ class User:
     def printAllTutors(self):
         for user in users.get("tutor", []):
             print(list(user.values()))
-    def registerAccount(self, user_data, user_type="student", filename="data.json"):
-        if not os.path.exists(filename):
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump({"tutor": [], "student": []}, f, indent=2, ensure_ascii=False)
-        with open(filename, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        data.setdefault(user_type, []).append(user_data)
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-
     
     def add_tutor(self):
         if "tutor" not in users:

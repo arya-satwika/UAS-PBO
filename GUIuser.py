@@ -13,15 +13,25 @@ class UserProfile(ctk.CTkToplevel):
         
         # Configure window
         self.title("User Profile - TutorCerdas")
-        self.geometry("800x600")
+        self.geometry("800x450")
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
         self.grab_set()  
         self.focus_set()
+        self.center_window()
         # Sample user data - in real app, this would come from a database
         self.user_data = user
         self.setup_ui()
     
+    def center_window(self):
+        """Center the window on screen"""
+        self.update_idletasks()
+        width = self.winfo_width()
+        height = self.winfo_height()
+        x = (self.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.winfo_screenheight() // 2) - (height // 2)
+        self.geometry(f"{width}x{height}+{x}+{y}")
+
     def setup_ui(self):
         # Main container
         self.grid_columnconfigure(0, weight=1)
@@ -89,12 +99,16 @@ class UserProfile(ctk.CTkToplevel):
         self.tabview = ctk.CTkTabview(
             self, 
             width=750, 
-            height=450,
+            height=300,
             fg_color=color_pallete["main_bg"],
             segmented_button_fg_color=color_pallete["clickable_bg"],
             segmented_button_selected_color=color_pallete["clickable_border"],
+            segmented_button_unselected_color=color_pallete["clickable_bg"],
+            segmented_button_unselected_hover_color=color_pallete["sidebar_border"],
             segmented_button_selected_hover_color=color_pallete["clickable_border"],
             text_color=color_pallete["text_clickable"],
+            border_color=color_pallete["main_border"],
+            border_width=1,
             corner_radius=25,
         )
         self.tabview.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
@@ -102,12 +116,10 @@ class UserProfile(ctk.CTkToplevel):
         # Add tabs
         self.tabview.add("Nama")
         self.tabview.add("Saldo")
-        self.tabview.add("Prodi")
         
         # Configure tab content
         self.setup_nama_tab()
         self.setup_saldo_tab()
-        self.setup_prodi_tab()
     
     def setup_nama_tab(self):
         tab = self.tabview.tab("Nama")
@@ -120,7 +132,7 @@ class UserProfile(ctk.CTkToplevel):
             border_width=1,
             corner_radius=20
         )
-        info_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        info_frame.pack(fill="x", expand=True, padx=20, pady=20)
         
         title_label = ctk.CTkLabel(
             info_frame,
@@ -132,19 +144,16 @@ class UserProfile(ctk.CTkToplevel):
         
         # Create info grid
         grid_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
-        grid_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        grid_frame.pack(fill="x", expand=True, padx=20, pady=10)
         
         # Configure grid
         grid_frame.grid_columnconfigure((0, 1), weight=1)
         
-        # Name
-        self.create_info_item(grid_frame, "Nama Lengkap", self.user_data.username, 0, 0)
-        
         # Program Studi
-        self.create_info_item(grid_frame, "Program Studi", self.user_data.prodi, 1, 0)
+        self.create_info_item(grid_frame, "Program Studi", self.user_data.prodi, 0, 0)
 
         # Angkatan
-        self.create_info_item(grid_frame, "Angkatan", self.user_data.angkatan, 1, 1)
+        self.create_info_item(grid_frame, "Angkatan", self.user_data.angkatan, 0, 1)
 
         # Edit button
         edit_btn = ctk.CTkButton(
@@ -153,7 +162,10 @@ class UserProfile(ctk.CTkToplevel):
             command=self.edit_profile,
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
-            text_color=color_pallete["text_clickable"]
+            text_color=color_pallete["text_clickable"],
+            border_color=color_pallete["clickable_border"],
+            border_width=1,
+            corner_radius=20
         )
         edit_btn.pack(pady=20)
     
@@ -199,7 +211,7 @@ class UserProfile(ctk.CTkToplevel):
         saldo_title = ctk.CTkLabel(
             saldo_frame,
             text="Saldo Saat Ini",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=14, family="Helvetica"),
             text_color=color_pallete["text_secondary"],
             corner_radius=30
         )
@@ -208,7 +220,7 @@ class UserProfile(ctk.CTkToplevel):
         saldo_amount = ctk.CTkLabel(
             saldo_frame,
             text=f"Rp {self.user_data.saldo:,}",
-            font=ctk.CTkFont(size=24, weight="bold"),
+            font=ctk.CTkFont(size=30, family="Helvetica", weight="bold"),
             text_color=color_pallete["text_primary"]
         )
         saldo_amount.pack(pady=(0, 20))
@@ -231,37 +243,7 @@ class UserProfile(ctk.CTkToplevel):
         topup_btn.pack(side="left", padx=(0, 10))
         
         
-    def setup_prodi_tab(self):
-        tab = self.tabview.tab("Prodi")
-        
-        # Main frame
-        main_frame = ctk.CTkFrame(
-            tab,
-            fg_color=color_pallete["card_bg"],
-            border_color=color_pallete["card_border"],
-            border_width=1,
-            corner_radius=20
-        )
-        main_frame.pack(fill="x", expand=True, padx=20, pady=20)
-        
-        title_label = ctk.CTkLabel(
-            main_frame,
-            text="Program Studi",
-            font=ctk.CTkFont(size=18, weight="bold"),
-            text_color=color_pallete["text_primary"]
-        )
-        title_label.pack(pady=(20, 20))
-        
-        # Program info
-        info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        info_frame.pack(fill="x", padx=20)
-        info_frame.grid_columnconfigure((0, 1), weight=1)
 
-        self.create_info_item(info_frame, "Program Studi", self.user_data.prodi, 0, 0)
-        # self.create_info_item(info_frame, "Fakultas", self.user_data.fakultas, 0, 1)
-
-
-    # Event handlers
     def edit_profile(self):
         messagebox.showinfo("Edit Profil", "Fitur edit profil akan segera tersedia!")
     

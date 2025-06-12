@@ -49,7 +49,7 @@ class GUI(ctk.CTk):
             corner_radius=35,
             fg_color=color_pallete["sidebar_fill"],
             border_color=color_pallete["sidebar_border"],
-            border_width=1,
+            border_width=1, 
             )
         sidebar.pack(side="left", fill="y", padx=(20,5), pady=20)
 

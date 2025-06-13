@@ -57,7 +57,7 @@ class GUI(ctk.CTk):
         title = ctk.CTkLabel(
             sidebar, 
             text="Tutorly",
-            font=("Helvetica", 40, "bold"),
+            font=("Arial", 40, "bold"),
             text_color=color_pallete["text_secondary"]
             )
         title.pack(pady=20, padx=70)
@@ -68,7 +68,7 @@ class GUI(ctk.CTk):
             command=self.open_register_window,
             corner_radius=30,
             height=40,
-            font=("Helvetica", 20, "bold"),
+            font=("Arial", 20, "bold"),
             text_color=color_pallete["text_clickable"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
@@ -84,7 +84,7 @@ class GUI(ctk.CTk):
             command=self.open_chat_history,
             corner_radius=30,
             height=40,
-            font=("Helvetica", 20, "bold"),
+            font=("Arial", 20, "bold"),
             text_color=color_pallete["text_clickable"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
@@ -107,7 +107,7 @@ class GUI(ctk.CTk):
         top_tutors_title = ctk.CTkLabel(
             top_tutors_frame,
             text="Tutor Terbaik",
-            font=("Helvetica", 20, "bold"),
+            font=("Arial", 20, "bold"),
             text_color=color_pallete["text_secondary"],
         )
         top_tutors_title.pack(pady=(15, 10))
@@ -124,7 +124,7 @@ class GUI(ctk.CTk):
             tutor_label = ctk.CTkLabel(
                 top_tutors_frame,
                 text=f"{i}. {tutor['nama']}",
-                font=("Helvetica", 18),
+                font=("Arial", 18),
                 text_color=color_pallete["text_secondary_teal"],
                 anchor="w"
             )
@@ -144,7 +144,7 @@ class GUI(ctk.CTk):
         profile_label = ctk.CTkButton(
             profile_frame,
             text=f"👤 {self.user_instance.username}",
-            font=("Segoe UI", 16, "bold"),
+            font=("Arial", 16, "bold"),
             text_color=color_pallete["text_primary"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
@@ -417,7 +417,7 @@ class GUI(ctk.CTk):
             action_frame,
             text=f"⏰ {tutor['waktu-belajar']}\n📍 {tutor['tempat-belajar']}",
             text_color=color_pallete["text_secondary"],
-            font=("Segoe UI", 15),
+            font=("Arial", 15),
         )
         detail_label.pack(anchor="w", padx=15, pady=20)
 
@@ -434,14 +434,14 @@ class GUI(ctk.CTk):
             harga_frame,
             text=f"Rp. {harga_formatted}",
             text_color=color_pallete["text_secondary"],
-            font=("Segoe UI", 14),
+            font=("Arial", 14),
         )
         harga_label.pack(anchor="center")
         chat_button = ctk.CTkButton(
             action_frame,
             text="💬 Chat",
             text_color=color_pallete["text_clickable"],
-            font=("Segoe UI", 20, "bold"),
+            font=("Arial", 20, "bold"),
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
             border_color=color_pallete["clickable_border"],

@@ -57,7 +57,7 @@ class ChatWindow(ctk.CTkToplevel):
         self.tutor_info = ctk.CTkLabel(
             self.header_frame,
             text=f"{tutor_data['nama']}",
-            font=("Helvetica", 20, "bold"),
+            font=("Arial", 20, "bold"),
             text_color=color_pallete["text_primary"],
             anchor="w",
             justify="left"
@@ -106,7 +106,7 @@ class ChatWindow(ctk.CTkToplevel):
         self.message_entry = ctk.CTkEntry(
             self.input_frame,
             placeholder_text="Ketik pesan Anda...",
-            font=("Helvetica", 14),
+            font=("Arial", 14),
             height=40,
             fg_color=color_pallete["entry_bg"],
             border_color=color_pallete["entry_border"],
@@ -124,7 +124,7 @@ class ChatWindow(ctk.CTkToplevel):
             hover_color=color_pallete["clickable_border"],
             text_color=color_pallete["text_clickable"],
             corner_radius=20,
-            font=("Helvetica", 14, "bold"),
+            font=("Arial", 14, "bold"),
             command=self.send_message
         )
         self.send_btn.grid(row=0, column=1, padx=(0, 15), pady=15)
@@ -188,7 +188,7 @@ class ChatWindow(ctk.CTkToplevel):
         msg_label = ctk.CTkLabel(
             msg_frame,
             text=message,
-            font=("Helvetica", 12),
+            font=("Arial", 12),
             text_color=color_pallete["text_clickable"],
             wraplength=300,
             justify="left"
@@ -200,7 +200,7 @@ class ChatWindow(ctk.CTkToplevel):
         time_label = ctk.CTkLabel(
             msg_container,
             text=timestamp,
-            font=("Helvetica", 10),
+            font=("Arial", 10),
             text_color=color_pallete["text_secondary"]
         )
         time_label.grid(row=1, column=1, sticky="e", padx=(0, 5))
@@ -230,7 +230,7 @@ class ChatWindow(ctk.CTkToplevel):
         msg_label = ctk.CTkLabel(
             msg_frame,
             text=message,
-            font=("Helvetica", 12),
+            font=("Arial", 12),
             text_color=color_pallete["text_primary"],
             wraplength=300,
             justify="left"
@@ -242,7 +242,7 @@ class ChatWindow(ctk.CTkToplevel):
         time_label = ctk.CTkLabel(
             msg_container,
             text=timestamp,
-            font=("Helvetica", 10),
+            font=("Arial", 10),
             text_color=color_pallete["text_secondary"]
         )
         time_label.grid(row=1, column=1, sticky="w", padx=(5, 0))

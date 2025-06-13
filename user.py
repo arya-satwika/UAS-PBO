@@ -12,6 +12,7 @@ users_list = data.get("users", [])
 tutors_list = data.get("tutors", [])
 
 class User:
+    # Atribut
     def __init__(self):
         self.username = ""
         self.password = ""
@@ -19,6 +20,8 @@ class User:
         self.saldo = 0
         self.prodi = ""
         self.angkatan = ""
+
+    # Method
     def addUserToJson(self, user_data):
         if "users" not in data:
             data["users"] = []
@@ -85,7 +88,7 @@ class User:
         if self.saldo >= tutor.get("harga", 0):
             for t in tutors_list:
                 if t.get("nama") == tutor.get("nama"):
-                    for user in users_list:
+                    for user in data.get("users", []):
                         if user.get("username") == tutor.get("nama"):
                             user["saldo"] = user.get("saldo", 0) + tutor.get("harga", 0)
                             break

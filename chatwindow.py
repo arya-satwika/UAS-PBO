@@ -45,14 +45,6 @@ class ChatWindow(ctk.CTkToplevel):
         )
         self.header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
         self.header_frame.grid_columnconfigure(1, weight=1)
-        
-        # # Tutor info in header
-        # self.tutor_avatar = ctk.CTkLabel(
-        #     self.header_frame,
-        #     text="👨‍🏫",
-        #     font=("Segoe UI", 24)
-        # )
-        # self.tutor_avatar.grid(row=0, column=0, padx=(15, 10), pady=10)
                 
         self.tutor_info = ctk.CTkLabel(
             self.header_frame,
@@ -153,7 +145,6 @@ class ChatWindow(ctk.CTkToplevel):
         self.geometry(f"{width}x{height}+{x}+{y}")
     
     def send_message(self):
-        """Send user message and get tutor reply"""
         message = self.message_entry.get().strip()
         if not message:
             return
@@ -168,7 +159,6 @@ class ChatWindow(ctk.CTkToplevel):
         self.after(1000, self.generate_tutor_reply)
     
     def add_user_message(self, message):
-        """Add user message to chat"""
         # Message container
         msg_container = ctk.CTkFrame(self.chat_frame, fg_color="transparent")
         msg_container.grid(sticky="ew", padx=5, pady=2)

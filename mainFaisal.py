@@ -19,9 +19,82 @@ class GUI(ctk.CTk):
         self.resizable(True, True)
         self.configure(fg_color=color_pallete["background"])
         self.center_window()
-        # Initialize user instance and current filter
-        self.user_instance = User()
-        self.user_instance.getUserByUsername("user3")
+        ctk.deactivate_automatic_dpi_awareness()       
+        ctk.set_window_scaling(1.0)  # Set scaling to 100%
+        # Dummy data for recent messages
+        self.recent_messages = [
+            {
+                "student_name": "Andi Wijaya",
+                "last_message": "Halo pak, saya ingin belajar tentang kalkulus.",
+                "timestamp": "14:30",
+                "unread": True,
+                "avatar": "👨‍🎓",
+                "messages": [
+                    {
+                        "sender": "student",
+                        "message": "Halo pak, saya ingin belajar tentang kalkulus. Apakah bapak bisa membantu?",
+                        "timestamp": "2024-01-15 14:30:15"
+                    }
+                ]
+            },
+            {
+                "student_name": "Budi Santoso",
+                "last_message": "Selamat siang pak, saya mau konsultasi tentang mekanika kuantum.",
+                "timestamp": "13:45",
+                "unread": True,
+                "avatar": "👨‍🎓",
+                "messages": [
+                    {
+                        "sender": "student",
+                        "message": "Selamat siang pak, saya mau konsultasi tentang materi mekanika kuantum.",
+                        "timestamp": "2024-01-15 13:45:22"
+                    }
+                ]
+            },
+            {
+                "student_name": "Citra Dewi",
+                "last_message": "Pak, saya kesulitan memahami materi ikatan kimia.",
+                "timestamp": "11:20",
+                "unread": True,
+                "avatar": "👩‍🎓",
+                "messages": [
+                    {
+                        "sender": "student",
+                        "message": "Pak, saya kesulitan memahami materi ikatan kimia. Bisakah bapak menjelaskan?",
+                        "timestamp": "2024-01-15 11:20:05"
+                    }
+                ]
+            },
+            {
+                "student_name": "Dian Purnama",
+                "last_message": "Terima kasih atas penjelasannya pak!",
+                "timestamp": "Kemarin",
+                "unread": False,
+                "avatar": "👩‍🎓",
+                "messages": [
+                    {
+                        "sender": "student",
+                        "message": "Terima kasih atas penjelasannya pak!",
+                        "timestamp": "2024-01-14 16:20:05"
+                    }
+                ]
+            },
+            {
+                "student_name": "Eko Prasetyo",
+                "last_message": "Kapan kita bisa jadwalkan sesi berikutnya?",
+                "timestamp": "Kemarin",
+                "unread": False,
+                "avatar": "👨‍🎓",
+                "messages": [
+                    {
+                        "sender": "student",
+                        "message": "Kapan kita bisa jadwalkan sesi berikutnya?",
+                        "timestamp": "2024-01-14 15:10:05"
+                    }
+                ]
+            }
+        ]
+        
         self.current_filter = None
         self.current_tutors = self.user_instance.loadAllTutors()
         
@@ -57,25 +130,25 @@ class GUI(ctk.CTk):
         title = ctk.CTkLabel(
             sidebar, 
             text="Tutorly",
-            font=("Arial", 40, "bold"),
+            font=("Helvetica", 40, "bold"),
             text_color=color_pallete["text_secondary"]
             )
-        title.pack(pady=20, padx=70)
+        title.pack(pady=(20, 10), padx=70)
 
         register_btn = ctk.CTkButton(
             sidebar, 
-            text="Jadi Tutor!",
+            text="Daftar Tutor",
             command=self.open_register_window,
             corner_radius=30,
-            height=40,
-            font=("Arial", 20, "bold"),
+            height=35,
+            font=("Helvetica", 20, "bold"),
             text_color=color_pallete["text_clickable"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
             border_color=color_pallete["clickable_border"],
             border_width=1,
             )
-        register_btn.pack(pady=10, padx=30, fill="x")
+        register_btn.pack(pady=5, padx=30, fill="x")
 
         # Chat History button
         chat_history_btn = ctk.CTkButton(
@@ -84,7 +157,7 @@ class GUI(ctk.CTk):
             command=self.open_chat_history,
             corner_radius=30,
             height=40,
-            font=("Arial", 20, "bold"),
+            font=("Helvetica", 20, "bold"),
             text_color=color_pallete["text_clickable"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
@@ -92,6 +165,34 @@ class GUI(ctk.CTk):
             border_width=1,
             )
         chat_history_btn.pack(pady=10, padx=30, fill="x")
+        
+        # Recent messages section (only for tutors)
+        if hasattr(self.user_instance, 'role') and self.user_instance.role == "tutor":
+            # Recent messages title
+            recent_messages_title = ctk.CTkLabel(
+                sidebar,
+                text="Pesan Terbaru",
+                font=("Helvetica", 16, "bold"),
+                text_color=color_pallete["text_primary"]
+            )
+            recent_messages_title.pack(pady=(5, 10), padx=20, anchor="w")
+            
+            # Recent messages scrollable frame
+            recent_messages_frame = ctk.CTkScrollableFrame(
+                sidebar,
+                height=20,
+                fg_color=color_pallete["highlight_bg"],
+                border_color=color_pallete["highlight_border"],
+                border_width=1,
+                corner_radius=15,
+                scrollbar_fg_color="transparent",
+                scrollbar_button_color=color_pallete["sidebar_border"]
+            )
+            recent_messages_frame.pack(padx=15, pady=(0, 5))
+            
+            # Add recent messages
+            for message in self.recent_messages:
+                self.create_message_item(recent_messages_frame, message)
 
         # Top Tutors section
         top_tutors_frame = ctk.CTkFrame(
@@ -101,22 +202,22 @@ class GUI(ctk.CTk):
             border_color=color_pallete["highlight_border"],
             border_width=1,
         )
-        top_tutors_frame.pack(side="top", fill="x", padx=16, pady=(16, 8))
+        top_tutors_frame.pack(side="top", fill="x", padx=25, pady=(0, 8))
 
         # Top tutors title
         top_tutors_title = ctk.CTkLabel(
             top_tutors_frame,
             text="Tutor Terbaik",
-            font=("Arial", 20, "bold"),
-            text_color=color_pallete["text_secondary"],
+            font=("Helvetica", 16, "bold"),
+            text_color=color_pallete["text_primary"]
         )
         top_tutors_title.pack(pady=(15, 10))
 
         # Dummy data for top 3 tutors
         top_tutors = [
-            {"nama": "Ahmad Santoso", "rating": 4.9},
-            {"nama": "Siti Nurhaliza", "rating": 4.8},
-            {"nama": "Budi Prasetyo", "rating": 4.7}
+            {"nama": "Dr. Ahmad Santoso", "rating": 4.9},
+            {"nama": "Prof. Siti Nurhaliza", "rating": 4.8},
+            {"nama": "Ir. Budi Prasetyo", "rating": 4.7}
         ]
 
         # Display top 3 tutors
@@ -124,11 +225,11 @@ class GUI(ctk.CTk):
             tutor_label = ctk.CTkLabel(
                 top_tutors_frame,
                 text=f"{i}. {tutor['nama']}",
-                font=("Arial", 18),
-                text_color=color_pallete["text_secondary_teal"],
+                font=("Helvetica", 12),
+                text_color=color_pallete["text_secondary"],
                 anchor="w"
             )
-            tutor_label.pack(pady=7, padx=15, fill="x")
+            tutor_label.pack(pady=2, padx=15, fill="x")
 
         # Add some bottom padding
         ctk.CTkLabel(top_tutors_frame, text="", height=10).pack()
@@ -144,7 +245,7 @@ class GUI(ctk.CTk):
         profile_label = ctk.CTkButton(
             profile_frame,
             text=f"👤 {self.user_instance.username}",
-            font=("Arial", 16, "bold"),
+            font=("Segoe UI", 16, "bold"),
             text_color=color_pallete["text_primary"],
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
@@ -156,6 +257,81 @@ class GUI(ctk.CTk):
             command=lambda: self.open_profile()
         )
         profile_label.pack(pady=5)
+    
+    def create_message_item(self, parent, message):
+        """Create a message item in the recent messages list"""
+        # Message frame
+        message_frame = ctk.CTkFrame(
+            parent,
+            fg_color=color_pallete["card_bg"] if not message["unread"] else color_pallete["clickable_bg"],
+            corner_radius=10,
+            border_width=1,
+            border_color=color_pallete["card_border"] if not message["unread"] else color_pallete["clickable_border"]
+        )
+        message_frame.pack(fill="x", padx=5, pady=5)
+        
+        # Make the entire frame clickable
+        message_frame.bind("<Button-1>", lambda e, m=message: self.open_student_chat(m))
+        
+        # Configure grid
+        message_frame.grid_columnconfigure(1, weight=0)
+        
+        # Student name
+        name_label = ctk.CTkLabel(
+            message_frame,
+            text=message["student_name"],
+            font=("Helvetica", 12, "bold"),
+            text_color=color_pallete["text_primary"],
+            anchor="w"
+        )
+        name_label.grid(row=0, column=1, sticky="w", padx=5, pady=(5, 0))
+        
+        # Last message (truncated)
+        last_message = message["last_message"]
+        if len(last_message) > 25:
+            last_message = last_message[:25] + "..."
+            
+        message_label = ctk.CTkLabel(
+            message_frame,
+            text=last_message,
+            font=("Helvetica", 10),
+            text_color=color_pallete["text_secondary"],
+            anchor="w"
+        )
+        message_label.grid(row=1, column=1, sticky="w", padx=5, pady=(0, 10))
+        
+        # Timestamp
+        time_label = ctk.CTkLabel(
+            message_frame,
+            text=message["timestamp"],
+            font=("Helvetica", 9),
+            text_color=color_pallete["text_secondary"],
+            anchor="e"
+        )
+        time_label.grid(row=0, column=2, padx=10, pady=(5, 0))
+        
+        # Unread indicator
+        if message["unread"]:
+            unread_indicator = ctk.CTkLabel(
+                message_frame,
+                text="●",
+                font=("Helvetica", 12),
+                text_color=color_pallete["success"],
+                anchor="e"
+            )
+            unread_indicator.grid(row=1, column=2, padx=10, pady=(0, 10))
+    
+    def open_student_chat(self, message_data):
+        """Open chat window with the student"""
+        # Create a tutor-like data structure for the ChatWindow
+        student_data = {
+            "nama": message_data["student_name"],
+            "mata-kuliah": ["Matematika", "Fisika"],  # Dummy data
+            "messages": message_data["messages"]
+        }
+        
+        # Open chat window
+        ChatWindow(self, student_data)
 
     def open_profile(self):
         UserProfile(self, self.user_instance)
@@ -417,7 +593,7 @@ class GUI(ctk.CTk):
             action_frame,
             text=f"⏰ {tutor['waktu-belajar']}\n📍 {tutor['tempat-belajar']}",
             text_color=color_pallete["text_secondary"],
-            font=("Arial", 15),
+            font=("Segoe UI", 15),
         )
         detail_label.pack(anchor="w", padx=15, pady=20)
 
@@ -434,14 +610,14 @@ class GUI(ctk.CTk):
             harga_frame,
             text=f"Rp. {harga_formatted}",
             text_color=color_pallete["text_secondary"],
-            font=("Arial", 14),
+            font=("Segoe UI", 14),
         )
         harga_label.pack(anchor="center")
         chat_button = ctk.CTkButton(
             action_frame,
             text="💬 Chat",
             text_color=color_pallete["text_clickable"],
-            font=("Arial", 20, "bold"),
+            font=("Segoe UI", 20, "bold"),
             fg_color=color_pallete["clickable_bg"],
             hover_color=color_pallete["clickable_border"],
             border_color=color_pallete["clickable_border"],

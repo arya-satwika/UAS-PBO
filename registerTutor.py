@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
-from user import User
+
+from user import User, Tutor
 from theme import color_pallete
 
 # Set consistent appearance mode
@@ -14,6 +15,7 @@ class RegisterTutor(ctk.CTkToplevel):
         self.geometry("600x700")
         self.resizable(False, False)
         self.current_user = user
+        self.tutor_instance = Tutor()
         self.configure(fg_color=color_pallete["background"])
         self.grab_set()  # Make this window modal
         self.focus_set()
@@ -216,8 +218,22 @@ class RegisterTutor(ctk.CTkToplevel):
         self.geometry(f"{width}x{height}+{x}+{y}")
 
     def register_tutor(self):
-        if self.current_user.register_tutor(self.harga_entry.get(), self.matkul_entry.get(), self.waktu_entry.get(), self.tempat_entry.get()):
-            self.current_user.role = "pengajar"
+        # Convert mata kuliah input (comma separated) to a list of course names
+        matkul_input = self.matkul_entry.get()
+        matkul_list = [m.strip() for m in matkul_input.split(",") if m.strip()]
+
+        data = {
+            "nama": self.current_user.username,
+            "prodi": self.current_user.prodi,
+            "angkatan": self.current_user.angkatan,
+            "harga": self.harga_entry.get(),
+            "mata-kuliah": matkul_list,
+            "waktu-belajar": self.waktu_entry.get(),
+            "tempat-belajar": self.tempat_entry.get()
+        }
+        if self.tutor_instance.addUserToJson(data):
+
+            self.current_user.role = "tutor"
             self.current_user.updateJson()
             messagebox.showinfo("Sukses", f"Pengajar {self.current_user.username} berhasil didaftarkan!")
             self.destroy()

@@ -15,6 +15,7 @@ class GUI(ctk.CTk):
         self.user_instance = user
         super().__init__()
         self.title("Tutor Cerdas")
+        self.state("zoomed")  
         self.geometry("1100x700")
         ctk.set_default_color_theme("blue") 
         self.resizable(True, True)
@@ -636,4 +637,5 @@ class GUI(ctk.CTk):
 
 if __name__ == "__main__":
     gui= GUI(User())
+    # Disable fullscreen for the main GUI
     gui.run()

@@ -1,5 +1,6 @@
 import os
 import json
+from abc import ABC, abstractmethod
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data.json")
@@ -11,8 +12,7 @@ except FileNotFoundError:
 users_list = data.get("users", [])
 tutors_list = data.get("tutors", [])
 
-class User:
-    # Atribut
+class Account(ABC):
     def __init__(self):
         self.username = ""
         self.password = ""
@@ -20,7 +20,20 @@ class User:
         self.saldo = 0
         self.prodi = ""
         self.angkatan = ""
+    @abstractmethod
+    def addUserToJson(self, user_data):
+        pass
+    @abstractmethod
+    def updateJson(self):
+        pass
+    
 
+class User(Account, ABC):
+    # Atribut
+    def __init__(self):
+        super().__init__()
+        self.role = "student"
+        self.saldo = 0
     # Method
     def addUserToJson(self, user_data):
         if "users" not in data:

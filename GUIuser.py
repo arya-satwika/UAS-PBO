@@ -3,6 +3,7 @@ from tkinter import messagebox
 from theme import color_pallete
 from user import User
 
+
 # Set consistent appearance mode
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")

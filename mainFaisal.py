@@ -3,6 +3,7 @@ import tkinter.messagebox as mb
 # ctk.set_appearance_mode("dark")
 from theme import color_pallete
 from user import User
+from user import Tutor
 from chatwindow import ChatWindow
 from registerTutor import RegisterTutor
 from GUIuser import UserProfile
@@ -14,6 +15,7 @@ class GUI(ctk.CTk):
         self.user_instance = user
         super().__init__()
         self.title("Tutor Cerdas")
+        self.state("zoomed")  
         self.geometry("1100x700")
         ctk.set_default_color_theme("blue") 
         self.resizable(True, True)
@@ -94,13 +96,13 @@ class GUI(ctk.CTk):
                 ]
             }
         ]
-        
+        self.tutor_instance = Tutor()
         self.current_filter = None
-        self.current_tutors = self.user_instance.loadAllTutors()
+        self.current_tutors = self.tutor_instance.loadAllTutors()
         
         # Get all unique mata kuliah for dropdown
         self.all_matkul = set()
-        for tutor in self.user_instance.loadAllTutors():
+        for tutor in self.tutor_instance.loadAllTutors():
             self.all_matkul.update(tutor.get("mata-kuliah", []))
         self.all_matkul = sorted(list(self.all_matkul))
 
@@ -444,7 +446,7 @@ class GUI(ctk.CTk):
         
         if self.current_filter:
             # Filter by mata kuliah
-            filtered_tutors = self.user_instance.filterByMatkul(self.current_filter)
+            filtered_tutors = self.tutor_instance.filterByMatkul(self.current_filter)
             self.current_tutors = filtered_tutors
             
             # Apply search if there's a search term
@@ -462,7 +464,7 @@ class GUI(ctk.CTk):
             self.show_status_message(status_text)
         else:
             # Show all tutors
-            all_tutors = self.user_instance.loadAllTutors()
+            all_tutors = self.tutor_instance.loadAllTutors()
             self.current_tutors = all_tutors
             
             # Apply search if there's a search term
@@ -486,7 +488,7 @@ class GUI(ctk.CTk):
         
         # Filter tutors by name
         filtered_tutors = []
-        base_tutors = self.current_tutors if self.current_filter else self.user_instance.loadAllTutors()
+        base_tutors = self.current_tutors if self.current_filter else self.tutor_instance.loadAllTutors()
         
         for tutor in base_tutors:
             if search_term in tutor.get("nama", "").lower():
@@ -534,7 +536,7 @@ class GUI(ctk.CTk):
         self.search_entry.delete(0, 'end')
         
         # Show all tutors
-        all_tutors = self.user_instance.loadAllTutors()
+        all_tutors = self.tutor_instance.loadAllTutors()
         self.current_tutors = all_tutors
         self.display_tutors(all_tutors)
         
@@ -604,7 +606,7 @@ class GUI(ctk.CTk):
             fg_color="transparent"
         )
         harga_frame.pack(padx=10, anchor="e")
-        harga_formatted = f"{tutor['harga']:,}".replace(",", ".")
+        harga_formatted = f"{tutor['harga']:}".replace(",", ".")
         harga_frame.propagate(False)  # Prevent frame from resizing to fit content
         harga_label = ctk.CTkLabel(
             harga_frame,
@@ -635,4 +637,5 @@ class GUI(ctk.CTk):
 
 if __name__ == "__main__":
     gui= GUI(User())
+    # Disable fullscreen for the main GUI
     gui.run()

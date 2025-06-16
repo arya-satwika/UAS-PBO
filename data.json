@@ -11,7 +11,8 @@
                 "Pemrograman Berorientasi Objek",
                 "Statistika",
                 "Matetmatika Diskrit"
-            ]
+            ],
+            "harga": 50000
         },
         {
             "nama": "Mikhael",
@@ -22,8 +23,9 @@
             "mata-kuliah": [
                 "Pemrograman Dasar",
                 "Sains Komputasi",
-                "Rekayasa Perangkat Lunak" 
-            ]
+                "Rekayasa Perangkat Lunak"
+            ],
+            "harga": 60000
         },
         {
             "nama": "Khidir Karawita",
@@ -35,7 +37,8 @@
                 "Basis Data",
                 "Keamanan Data dan Informasi"
             ],
-            "waktu-belajar": "09.00 - 14.00"
+            "waktu-belajar": "09.00 - 14.00",
+            "harga": 70000
         },
         {
             "nama": "sigma boy",
@@ -48,7 +51,8 @@
                 "Pemrograman Berorientasi Objek",
                 "Statistika",
                 "Matetmatika Diskrit"
-            ]
+            ],
+            "harga": 50000
         },
         {
             "nama": "Juminten",
@@ -60,7 +64,8 @@
                 "Basis Data", 
                 "Sistem Operasi",
                 "Literasi Digital"
-            ]
+            ],
+            "harga": 50000
         }
     ],
     "users": [
